@@ -20,15 +20,15 @@ public class Game {
 	public ArrayList<GameObject> myScene = new ArrayList<GameObject>();
 	
 	private boolean canJump, paused;
-	private float playerVelocityX, playerVelocityY, pipesVelocity, gravity;
+	private float playerVelocityY, pipesVelocity, gravity;
 	
 	public void onCreate() {
 		// important variables for this class's logic
-		playerVelocityX = playerVelocityY = 0;
+		playerVelocityY = 0;
 		pipesVelocity = -0.5f;
 		canJump = true;
 		paused = true;
-		gravity = .0098f;
+		gravity = 7.8f;
 		
 		//GameObject creation and adding to scene.
 		GameObject player = new GameObject(-0.6f, 0.0f, 0.0f);
@@ -83,7 +83,7 @@ public class Game {
 				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[1].get(1) > -1f &&
 				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[2].get(1) > -1f &&*/
 				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[3].get(1) > -1f) {
-			playerVelocityY -= gravity;
+			playerVelocityY -= gravity*App.gameTimer.deltaTime;
 		} else {
 			//REPLACE THIS WITH LOSS STATE
 			playerVelocityY = 0;
@@ -104,7 +104,6 @@ public class Game {
 		// Changes position of object per frame by the velocity of that object (unit/second) * time in seconds
 		//			since last frame:  velocity*deltaTime
 		myScene.get(0).<TransformComponent>getComponent("Transform").y += (playerVelocityY*App.gameTimer.deltaTime);
-		myScene.get(0).<TransformComponent>getComponent("Transform").x += (playerVelocityX*App.gameTimer.deltaTime);
 		
 		myScene.get(1).<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
 		myScene.get(2).<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);

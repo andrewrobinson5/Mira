@@ -26,17 +26,3 @@
 //						matrix math (3d transformations and projections)
 //						and of course the javadoc website for JOML for function and class references
 
-
-//package com.PlatformerGame.game;
-//
-//public class PlatformerGame {
-//
-//	public static void main(String[] args) {
-//		Game theGame = new Game();
-//		
-//		theGame.init();
-//		theGame.loop();
-//		theGame.finalize();
-//	}
-//
-//}
