@@ -6,15 +6,11 @@ public class GameObject {
 	public ArrayList<GameObjectComponent> listComponents = new ArrayList<GameObjectComponent>();
 	private GameObjectComponent emptyComponent;
 	protected TransformComponent transform;
-	private boolean hasRunOnce = false;
+	public boolean hasRunOnce = false;
 	
-	public int onCreate() {
-		if (!hasRunOnce) {
+	public void onCreate() {
 			
-			hasRunOnce = true;
-			return 1;
-		}
-		return 0;
+		hasRunOnce = true;
 	}
 	public void onUpdate() {}
 	

@@ -9,13 +9,8 @@ import com.PlatformerGame.engine.core.*;
 public class Pipe extends GameObject {
 	private TransformComponent m_transform = this.<TransformComponent>getComponent("Transform");
 	
-	public int onCreate() {
-		if (super.onCreate() == 1) {
-			
-			
-			
-		}
-		return 0;
+	public void onCreate() {
+		super.onCreate();
 	}
 	
 	public void onUpdate() {

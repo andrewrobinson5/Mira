@@ -6,15 +6,10 @@ public class GameObjectComponent {
 	protected GameObject m_object;
 	
 	public boolean enabled;
-	private boolean hasRunOnce;
+	public boolean hasRunOnce;
 	
-	public int onCreate() {
-		if (!hasRunOnce) {
-			
-			hasRunOnce = true;
-			return 1;
-		}
-		return 0;
+	public void onCreate() {
+		hasRunOnce = true;
 	}
 	
 	public void onUpdate() {

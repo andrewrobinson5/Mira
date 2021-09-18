@@ -8,6 +8,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import org.joml.*;
 
+import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +23,8 @@ public class OGLRenderer {
 	
 	// also creates array of VAOs, but only the ones that should be rendered on current frame.
 	private ArrayList<Integer> renderQueue = new ArrayList<Integer>();
+
+	int vertex_indices_data[] = { 0, 1, 2, 1, 2, 3 };
 	
 	// these just aren't needed as far as I can tell
 	//private ArrayList<Integer> listVBOs = new ArrayList<Integer>();
@@ -33,62 +36,72 @@ public class OGLRenderer {
 		int VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 		int FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-		// Read the Vertex Shader code from the file
-		String VertexShaderCode = new BufferedReader(
-			      new InputStreamReader(getClass().getResourceAsStream(vertex_file_path), StandardCharsets.UTF_8))
-			        .lines().collect(Collectors.joining("\n"));
-
-		// Read the Fragment Shader code from the file
-		String FragmentShaderCode = new BufferedReader(
-			      new InputStreamReader(getClass().getResourceAsStream(fragment_file_path), StandardCharsets.UTF_8))
-			        .lines().collect(Collectors.joining("\n"));
-
-		int InfoLogLength;
-
-		// Compile Vertex Shader
-		System.out.println("Compiling shader: " + vertex_file_path);
-		glShaderSource(VertexShaderID, VertexShaderCode);
-		glCompileShader(VertexShaderID);
-		
-		// Check Vertex Shader
-		InfoLogLength = glGetShaderi(VertexShaderID, GL_INFO_LOG_LENGTH);
-		
-		if ( InfoLogLength > 0 ){
-			System.out.println(glGetShaderInfoLog(VertexShaderID));
-		}
-
-		// Compile Fragment Shader
-		System.out.println("Compiling shader: " + fragment_file_path);
-		glShaderSource(FragmentShaderID, FragmentShaderCode);
-		glCompileShader(FragmentShaderID);
-
-		// Check Fragment Shader
-		InfoLogLength = glGetShaderi(FragmentShaderID, GL_INFO_LOG_LENGTH);
-		
-		if ( InfoLogLength > 0 ){
-			System.out.println(glGetShaderInfoLog(FragmentShaderID));
-		}
-
-		// Link the program
 		int ProgramID = glCreateProgram();
-		System.out.println("Attaching Shaders");
-		glAttachShader(ProgramID, VertexShaderID);
-		glAttachShader(ProgramID, FragmentShaderID);
-		System.out.println("Linking program");
-		glLinkProgram(ProgramID);
 
-		// Check the program
-		InfoLogLength = glGetProgrami(ProgramID, GL_INFO_LOG_LENGTH);
-		
-		if ( InfoLogLength > 0 ){
-			System.out.println(glGetProgramInfoLog(ProgramID));
+		// Read the Vertex Shader code from the file
+		try {
+			InputStreamReader vsisr = new InputStreamReader(getClass().getResourceAsStream(vertex_file_path), StandardCharsets.UTF_8);
+			BufferedReader vsbr = new BufferedReader(vsisr);
+			String VertexShaderCode = vsbr.lines().collect(Collectors.joining("\n"));
+	
+			// Read the Fragment Shader code from the file
+			InputStreamReader fsisr = new InputStreamReader(getClass().getResourceAsStream(fragment_file_path), StandardCharsets.UTF_8);
+			BufferedReader fsbr = new BufferedReader(fsisr);
+			String FragmentShaderCode = fsbr.lines().collect(Collectors.joining("\n"));
+	
+			int InfoLogLength;
+	
+			// Compile Vertex Shader
+			System.out.println("Compiling shader: " + vertex_file_path);
+			glShaderSource(VertexShaderID, VertexShaderCode);
+			glCompileShader(VertexShaderID);
+			
+			// Check Vertex Shader
+			InfoLogLength = glGetShaderi(VertexShaderID, GL_INFO_LOG_LENGTH);
+			
+			if ( InfoLogLength > 0 ){
+				System.out.println(glGetShaderInfoLog(VertexShaderID));
+			}
+	
+			// Compile Fragment Shader
+			System.out.println("Compiling shader: " + fragment_file_path);
+			glShaderSource(FragmentShaderID, FragmentShaderCode);
+			glCompileShader(FragmentShaderID);
+	
+			// Check Fragment Shader
+			InfoLogLength = glGetShaderi(FragmentShaderID, GL_INFO_LOG_LENGTH);
+			
+			if ( InfoLogLength > 0 ){
+				System.out.println(glGetShaderInfoLog(FragmentShaderID));
+			}
+	
+			// Link the program
+			System.out.println("Attaching Shaders");
+			glAttachShader(ProgramID, VertexShaderID);
+			glAttachShader(ProgramID, FragmentShaderID);
+			System.out.println("Linking program");
+			glLinkProgram(ProgramID);
+	
+			// Check the program
+			InfoLogLength = glGetProgrami(ProgramID, GL_INFO_LOG_LENGTH);
+			
+			if ( InfoLogLength > 0 ){
+				System.out.println(glGetProgramInfoLog(ProgramID));
+			}
+			
+			glDetachShader(ProgramID, VertexShaderID);
+			glDetachShader(ProgramID, FragmentShaderID);
+			
+			glDeleteShader(VertexShaderID);
+			glDeleteShader(FragmentShaderID);
+			
+			vsisr.close();
+			fsisr.close();
+			vsbr.close();
+			fsbr.close();
+		} catch (IOException e) {
+			System.out.println("WARNING: Shader InputStreamReader & BufferedReaders never closed!");
 		}
-		
-		glDetachShader(ProgramID, VertexShaderID);
-		glDetachShader(ProgramID, FragmentShaderID);
-		
-		glDeleteShader(VertexShaderID);
-		glDeleteShader(FragmentShaderID);
 		
 		System.out.println("loadShaders() done.");
 		return ProgramID;
@@ -98,12 +111,16 @@ public class OGLRenderer {
 		renderQueue.add(l_vao);
 	}
 	
+	// SOMEWHERE IN HERE IS THE INTEGER LEAK
 	public int createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Vector3f color) {
+		// I think the issue may be that I'm creating a new indexBuffer and vertexBuffer for each object every frame. I should find a way to check and see if there's already an index and vertex buffer for a single object. This probably requires integration
+		//		with my QuadRendererComponent class
+		
+		// UPDATE on the above: I was incorrect. I think it's that we're never clearing listVAOs.
 		int indexBuffer = glCreateBuffers();
 		int vertexBuffer = glCreateBuffers();
 		
-		// Colors hard-coded for now. Will probably put color/texture data
-		// in separate buffer object or something.
+
 		float vertex_buffer_data[] = {
 				v1.get(0), v1.get(1), v1.get(2), color.get(0), color.get(1), color.get(2),
 				v2.get(0), v2.get(1), v2.get(2), color.get(0), color.get(1), color.get(2),
@@ -111,8 +128,6 @@ public class OGLRenderer {
 				v4.get(0), v4.get(1), v4.get(2), color.get(0), color.get(1), color.get(2),
 		};
 		
-		int vertex_indices_data[] = { 0, 1, 2, 1, 2, 3 };
-
 		// Syntactically, glCreateVertexArrays is the same as glGenVertexArrays.
 		// The difference between the two methods is that glGenVertexArrays() only
 		//  returns an int ID of the vertex array and marks it as used, but it
@@ -165,6 +180,7 @@ public class OGLRenderer {
 		
 		glfwSwapBuffers(gameWindow.window);
 		renderQueue.clear();
+		listVAOs.clear();
 	}
 	
 	public OGLRenderer() {

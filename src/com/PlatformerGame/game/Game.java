@@ -4,6 +4,9 @@
 //		here directly that should probably be abstracted. I have not implemented several engine features like scene
 //		loading or input handling or a better way to handle onUpdate() and onCreate(), etc... 
 
+
+//TODO: Fix memory leaks in rendering loop and elsewhere
+
 package com.PlatformerGame.game;
 
 import com.PlatformerGame.engine.core.*;

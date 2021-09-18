@@ -16,10 +16,10 @@ public class QuadRendererComponent extends RendererComponent {
 	private int myVAO;
 	
 	private void setBounds(Vector3f one, Vector3f two, Vector3f three, Vector3f four) {
-		bounds[0] = one;
-		bounds[1] = two;
-		bounds[2] = three;
-		bounds[3] = four;
+		bounds[0] = (Vector3f)one;
+		bounds[1] = (Vector3f)two;
+		bounds[2] = (Vector3f)three;
+		bounds[3] = (Vector3f)four;
 	}	
 	
 	private void setBoundsRelativeToTransform(TransformComponent l_transform, Vector3f one, Vector3f two, Vector3f three, Vector3f four) {
@@ -30,25 +30,35 @@ public class QuadRendererComponent extends RendererComponent {
 	}
 	
 	//TODO: Rendering functionality
-	public int onCreate() {
-		// THIS IS CLUNKY, BUT FOR NOW ONCREATE() CONTENTS GO IN THIS IF
-		if (super.onCreate() == 1) {
-			
-		}
-		return 0;
+	public void onCreate() {
+		super.onCreate();
 	}
 	
 	public void onUpdate() {
+		
 		//super.onUpdate(); // Nothing in superclass onUpdate(), commenting out for now
 
+		// My memory leak is here. The big one.
+		// OKAY so after profiling, there are two major leaks here. The first is that there are a whole lot of Vector3f objects getting created but not destroyed until garbage collected, which takes longer than we want. By the time we GC, it eats up several
+		//		megabytes of ram. So we need a way to not recreate so many Vector3fs every update.
+		// To be honest, I'm not even sure that Vector3f is leaking. It just went up at an alarming rate at launch.
+		
+		// The second major leak is the one that really messes up the code. Somewhere in here, we're creating like millions of integers, and these don't get destroyed by the garbage collector. I don't know exactly which likes are the culprit. I wonder if
+		//		it's something JOML is doing behind the scenes with the Vector3f creations.
+		
 		setBounds(new Vector3f(defaultBounds[0]),
 				  new Vector3f(defaultBounds[1]),
 				  new Vector3f(defaultBounds[2]),
 				  new Vector3f(defaultBounds[3]));
 		
+		// Integer leak is not caused by JOML.
+		
+		// It is also not caused by this line:
 		setBoundsRelativeToTransform(m_object.transform, bounds[0], bounds[1], bounds[2], bounds[3]);
 		
+		// THIS IS THE PROBLEM LINE IN THE UPDATE. TIME TO TRACE IT TO createQuad();
 		myVAO = m_renderer.createQuad(bounds[0], bounds[1], bounds[2], bounds[3], solidColor);
+		
 		m_renderer.addToRenderQueue(myVAO);
 	}	
 	
@@ -78,7 +88,7 @@ public class QuadRendererComponent extends RendererComponent {
 	//leaving in here for non-rectangular quads, but don't like the format at all.
 	public QuadRendererComponent(Vector3f l_one, Vector3f l_two, Vector3f l_three, Vector3f l_four) {
 		super("QuadRenderer");
-
+		
 		defaultBounds[0] = new Vector3f(l_one);
 		defaultBounds[1] = new Vector3f(l_two);
 		defaultBounds[2] = new Vector3f(l_three);
