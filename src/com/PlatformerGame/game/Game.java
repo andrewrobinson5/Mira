@@ -28,7 +28,7 @@ public class Game {
 		pipesVelocity = -0.5f;
 		canJump = true;
 		paused = true;
-		gravity = 7.8f;
+		gravity = 6.8f;
 		
 		//GameObject creation and adding to scene.
 		GameObject player = new GameObject(-0.6f, 0.0f, 0.0f);
@@ -48,8 +48,6 @@ public class Game {
 		
 		Pipe wallBottom4 = new Pipe();
 		wallBottom4.<TransformComponent>getComponent("Transform").x = 2.55f;
-		
-		
 		
 		myScene.add(wallBottom1);
 		//myScene.add(wallTop1);
@@ -76,7 +74,6 @@ public class Game {
 		// this is an artifact from platforming gravity logic but it works fine enough for this demo's loss state.
 		//	if we wanna make this faster, we can actually just nix three of the conditions because we just need
 		//	to know when the player falls all the way down.
-		
 		// but this is definitely janky and I *should* probably add a proper collision detection and a physics component.
 		//  For this demo, I do not need it.
 		if (	/*myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[0].get(1) > -1f &&
