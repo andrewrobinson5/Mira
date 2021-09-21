@@ -1,12 +1,8 @@
 package com.PlatformerGame.engine.renderer;
 
-//import com.PlatformerGame.engine.core.*;
-
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-
-import org.joml.*;
 
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -22,13 +18,14 @@ public class OGLRenderer {
 	private ArrayList<Integer> listVAOs = new ArrayList<Integer>();
 	
 	// also creates array of VAOs, but only the ones that should be rendered on current frame.
-	private ArrayList<Integer> renderQueue = new ArrayList<Integer>();
-
-	int vertex_indices_data[] = { 0, 1, 2, 1, 2, 3 };
+	public ArrayList<Integer> renderQueue = new ArrayList<Integer>();
+	
+	int quad_vertex_indices_data[] = { 0, 1, 2, 1, 2, 3 };
 	
 	// these just aren't needed as far as I can tell
-	//private ArrayList<Integer> listVBOs = new ArrayList<Integer>();
-	//private ArrayList<Integer> listIndices = new ArrayList<Integer>();
+	// Correction: I need these now. I need to keep track of these so I can delete them after rendering.
+	private ArrayList<Integer> listVBOs = new ArrayList<Integer>();
+	private ArrayList<Integer> listIndices = new ArrayList<Integer>();
 	
 	public int loadShaders(String vertex_file_path, String fragment_file_path) {
 		System.out.println("loadShaders() begin");
@@ -111,22 +108,14 @@ public class OGLRenderer {
 		renderQueue.add(l_vao);
 	}
 	
-	// SOMEWHERE IN HERE IS THE INTEGER LEAK
-	public int createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Vector3f color) {
-		// I think the issue may be that I'm creating a new indexBuffer and vertexBuffer for each object every frame. I should find a way to check and see if there's already an index and vertex buffer for a single object. This probably requires integration
-		//		with my QuadRendererComponent class
-		
-		// UPDATE on the above: I was incorrect. I think it's that we're never clearing listVAOs.
-		int indexBuffer = glCreateBuffers();
-		int vertexBuffer = glCreateBuffers();
-		
+	public void createQuad(float[] vertBuf) {
 
-		float vertex_buffer_data[] = {
-				v1.get(0), v1.get(1), v1.get(2), color.get(0), color.get(1), color.get(2),
-				v2.get(0), v2.get(1), v2.get(2), color.get(0), color.get(1), color.get(2),
-				v3.get(0), v3.get(1), v3.get(2), color.get(0), color.get(1), color.get(2),
-				v4.get(0), v4.get(1), v4.get(2), color.get(0), color.get(1), color.get(2),
-		};
+		// I think the issue may be that I'm creating a new indexBuffer and vertexBuffer for each object every frame. I should find a way to check and see if there's already an index and vertex buffer for a single object.
+		// UPDATE: It was in fact the issue.
+		
+		// That's not the main issue but 
+		listVBOs.add(glCreateBuffers());
+		listIndices.add(glCreateBuffers());
 		
 		// Syntactically, glCreateVertexArrays is the same as glGenVertexArrays.
 		// The difference between the two methods is that glGenVertexArrays() only
@@ -140,20 +129,22 @@ public class OGLRenderer {
 		//glBindVertexArray(VertexArrays[0]);
 		
 		listVAOs.add(glCreateVertexArrays());
+
 		glBindVertexArray(listVAOs.get(listVAOs.size()-1));
 
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, listVBOs.get(listVBOs.size()-1));
+		glBufferData(GL_ARRAY_BUFFER, vertBuf, GL_STATIC_DRAW);
 		
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertex_indices_data, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, listIndices.get(listIndices.size()-1));
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, quad_vertex_indices_data, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3,	GL_FLOAT, false, 6 * 4,	NULL);
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4,	NULL + (3*4));
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		
-		return listVAOs.get(listVAOs.size()-1);
+		addToRenderQueue(listVAOs.get(listVAOs.size()-1));
+		
 	}
 	
 	public void draw(int l_vao) {
@@ -173,14 +164,28 @@ public class OGLRenderer {
 	// AND ONLY RENDER WHAT IS CURRENTLY IN THE RENDER QUEUE AT THE TIME OF EXECUTION
 	public void updateRender(Window gameWindow) {
 		glClear(GL_COLOR_BUFFER_BIT);
-		//Temporary drawing function; not final functionality
 		for (int i = 0; i!=renderQueue.size(); i++) {
 			draw(renderQueue.get(i));
 		}
 		
 		glfwSwapBuffers(gameWindow.window);
 		renderQueue.clear();
+		
+		// This fixes most of the memory leak. Thank God.
+		for (int i = 0; i < listVAOs.size(); i++) {
+			glDeleteVertexArrays(listVAOs.get(i));
+		}
 		listVAOs.clear();
+		
+		for (int i = 0; i < listVBOs.size(); i++) {
+			glDeleteBuffers(listVBOs.get(i));
+		}
+		listVBOs.clear();
+		
+		for (int i = 0; i < listIndices.size(); i++) {
+			glDeleteBuffers(listIndices.get(i));
+		}
+		listIndices.clear();
 	}
 	
 	public OGLRenderer() {

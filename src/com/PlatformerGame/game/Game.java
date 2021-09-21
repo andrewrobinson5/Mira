@@ -25,6 +25,13 @@ public class Game {
 	private boolean canJump, paused;
 	private float playerVelocityY, pipesVelocity, gravity;
 	
+	float[] test = {
+			-1f, 1f, 0, 0, 0, 0,
+			-1f, -1f, 0, 0, 0, 0,
+			1f, 1f, 0, 0, 0, 0,
+			1f, -1f, 0, 0, 0, 0,
+	};
+	
 	public void onCreate() {
 		// important variables for this class's logic
 		playerVelocityY = 0;
@@ -38,6 +45,8 @@ public class Game {
 		player.addComponent(new QuadRendererComponent(0.15f, 0.12f));
 		player.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector3f(0.1f, 0.0f, 0.8f);
 		myScene.add(player);
+		
+		
 		
 		// Also we probably need to have two different game objects per wall. Parenting would help right about now.
 		Pipe wallBottom1 = new Pipe();
