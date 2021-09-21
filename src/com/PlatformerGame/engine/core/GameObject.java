@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class GameObject {
 	public ArrayList<GameObjectComponent> listComponents = new ArrayList<GameObjectComponent>();
 	private GameObjectComponent emptyComponent;
-	protected TransformComponent transform;
+	public TransformComponent transform;
 	public boolean hasRunOnce = false;
 	
 	public void onCreate() {
@@ -25,7 +25,6 @@ public class GameObject {
 		if (nameExists) {
 			throw new RuntimeException("Error: cannot create more than one component with one name");
 		} else {
-			//don't fucking touch this next line.
 			component.setGameObject(this);
 			
 			listComponents.add(component);

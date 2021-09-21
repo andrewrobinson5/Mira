@@ -86,18 +86,18 @@ public class App {
 			
 			gameTimer.oldTime = gameTimer.currentTime;
 			
-			// Sleep to avoid resource hogging -- TODO: Make this work with an actual MAX_FPS value
-//			while (maxFPSTimer < 0.008333) {
-//				Thread.yield();
-//				
-//				//sleep for 1ms
-//				try {
-//					Thread.sleep(1);
-//				} catch(Exception e) {} 
-//				
-//				maxFPSTimer += gameTimer.unaffectedDeltaTime;
-//			}
-			//maxFPSTimer = 0;
+			// Sleep to avoid resource hogging
+			while (maxFPSTimer < 0.008333) {
+				Thread.yield();
+				
+				//sleep for 1ms
+				try {
+					Thread.sleep(1);
+				} catch(Exception e) {} 
+				
+				maxFPSTimer += gameTimer.unaffectedDeltaTime;
+			}
+			maxFPSTimer = 0;
 			frameCounter++;
 			
 			// Asks politely for garbage to be collected every minute.

@@ -91,7 +91,7 @@ public class Game {
 		if (	/*myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[0].get(1) > -1f &&
 				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[1].get(1) > -1f &&
 				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[2].get(1) > -1f &&*/
-				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[3].get(1) > -1f) {
+				(myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[3].get(1) + myScene.get(0).transform.getCoords().get(1)) > -1f) {
 			playerVelocityY -= gravity*App.gameTimer.deltaTime;
 		} else {
 			//REPLACE THIS WITH LOSS STATE
