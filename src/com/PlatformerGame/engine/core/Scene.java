@@ -31,30 +31,44 @@ public class Scene {
 		return x;
 	}
 	
+	// I don't really like that this is in here but I shouldn't need to fix it.
 	public void hierarchyHelperFunctionCreate(GameObject g) {
 		g.onCreate();
 		g.hasRunOnce = true;
-		for(int e = 0; e < listObjects.size(); e++) {
-			if(listObjects.get(e).parent == g) {
-				alreadyIteratedObjects.add(g);
-				hierarchyHelperFunctionCreate(g);
-			}
-		}
-	}
-	
-	public void hierarchyHelperFunctionUpdate(GameObject g) {
-		g.onUpdate();
-		g.hasRunOnce = true;
-		for(int e = 0; e < listObjects.size(); e++) {
-			if(listObjects.get(e).parent == g) {
-				alreadyIteratedObjects.add(g);
-				hierarchyHelperFunctionUpdate(g);
+		if(!alreadyIteratedObjects.contains(g)) { 
+			alreadyIteratedObjects.add(g);
+			for(int e = 0; e < g.children.size(); e++) {
+				if(listObjects.get(e).parent == g) {
+					hierarchyHelperFunctionCreate(g.children.get(e));
+				}
 			}
 		}
 	}
 
+	// I don't really like that this is in here but I shouldn't need to fix it.
+	public void hierarchyHelperFunctionUpdate(GameObject g) {
+		g.onUpdate();
+		g.hasRunOnce = true;
+		if(!alreadyIteratedObjects.contains(g)) { 
+			for (int i = 0; i < g.listComponents.size(); i++) {
+				if (g.listComponents.get(i).enabled) {
+					if (!g.listComponents.get(i).hasRunOnce)
+						g.listComponents.get(i).onCreate();
+					
+					g.listComponents.get(i).onUpdate();
+				}
+			}
+			alreadyIteratedObjects.add(g);
+			for(int e = 0; e < g.children.size(); e++) {
+				hierarchyHelperFunctionUpdate(g.children.get(e));
+			}
+		}
+		
+	}
+
 	public void loadScene() {
 		App.currentScene = this;
+//		System.out.println(App.currentScene.);
 	}
 	
 	public void unloadScene() {

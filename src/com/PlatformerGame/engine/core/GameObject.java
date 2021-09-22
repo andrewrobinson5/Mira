@@ -9,7 +9,7 @@ public class GameObject {
 	public boolean hasRunOnce = false;
 	
 	//Children-parent tracking stuff
-	private ArrayList<GameObject> children = new ArrayList<GameObject>();
+	public ArrayList<GameObject> children = new ArrayList<GameObject>();
 	protected GameObject parent = null;
 	public int hierLevel;
 	
@@ -68,7 +68,9 @@ public class GameObject {
 	public void onCreate() {
 		hasRunOnce = true;
 	}
-	public void onUpdate() {}
+	public void onUpdate() {
+		
+	}
 	
 	public <T extends GameObjectComponent> int addComponent(T component) {
 		boolean nameExists = false;

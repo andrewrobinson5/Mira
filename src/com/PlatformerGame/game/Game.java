@@ -67,6 +67,7 @@ public class Game {
 		//myScene.add(wallTop3);
 		myScene.add(wallBottom4);
 		//myScene.add(wallTop4);
+		
 	}	
 	
 	public void onUpdate() {

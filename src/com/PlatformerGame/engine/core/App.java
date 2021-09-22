@@ -53,9 +53,9 @@ public class App {
 			//TODO: iterate thru items in current scene in correct order
 			if(currentScene != null) {
 				// Iterate through all GameObject onCreates in order
-				for(int h = 0; h < currentScene.getHierarchyDepth(); h++) {
+				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
 					for (int g = 0; g < currentScene.size(); g++) {	
-						if (currentScene.get(g).hierLevel == h && !currentScene.alreadyIteratedObjects.contains(g) && !currentScene.get(g).hasRunOnce) {
+						if (currentScene.get(g).hierLevel == h && !currentScene.get(g).hasRunOnce) {
 							currentScene.hierarchyHelperFunctionCreate(currentScene.get(g));
 						}
 					}
@@ -63,34 +63,14 @@ public class App {
 				currentScene.alreadyIteratedObjects.clear();
 				
 				// Iterate through all GameObject onUpdates in order
-				for(int h = 0; h < currentScene.getHierarchyDepth(); h++) {
+				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
 					for (int g = 0; g < currentScene.size(); g++) {	
-						if (currentScene.get(g).hierLevel == h && !currentScene.alreadyIteratedObjects.contains(g)) {
+						if (currentScene.get(g).hierLevel == h) {
 							currentScene.hierarchyHelperFunctionUpdate(currentScene.get(g));
 						}
 					}
 				}
 				currentScene.alreadyIteratedObjects.clear();
-					
-//				for(int h = 0; h < currentScene.getHierarchyDepth(); h++) {
-//					for (int g = 0; g < currentScene.size(); g++) {	
-//						if (currentScene.get(g).hierLevel == h && !currentScene.alreadyIteratedObjects.contains(g) && !currentScene.get(g).hasRunOnce) {
-//							currentScene.hierarchyHelperFunctionCreate(currentScene.get(g));
-//						}
-//					}
-//				}
-//				currentScene.alreadyIteratedObjects.clear();	
-					
-					
-					//this one goes through components
-//					for (int i = 0; i < currentScene.get(g).listComponents.size(); i++) {
-//						if (currentScene.get(g).listComponents.get(i).enabled) {
-//							if (!currentScene.get(g).listComponents.get(i).hasRunOnce)
-//								currentScene.get(g).listComponents.get(i).onCreate();
-//							
-//							currentScene.get(g).listComponents.get(i).onUpdate();
-//						}
-//					}
 			} else {
 				// some kind of loading screen?
 			}
@@ -103,7 +83,7 @@ public class App {
 			gameTimer.unaffectedDeltaTime = (gameTimer.currentTime-gameTimer.oldTime);
 			gameTimer.deltaTime = gameTimer.unaffectedDeltaTime*gameTimer.getTimeScale();
 			if (timer >= 1) {
-				System.out.println(frameCounter);
+				//System.out.println(frameCounter);
 				frameCounter = 0;
 				timer = 0;
 			} else {
