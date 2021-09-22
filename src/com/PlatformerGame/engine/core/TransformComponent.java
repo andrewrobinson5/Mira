@@ -4,13 +4,17 @@ import org.joml.*;
 
 public class TransformComponent extends GameObjectComponent {
 	public float x, y, z;
-	public float tmpX, tmpY, tmpZ;
+	public float globalX, globalY, globalZ;
 	
 	public void onUpdate() {
 		if(m_object.parent != null) {
-			setCoords(m_object.parent.transform.getCoords().get(0),
-					  m_object.parent.transform.getCoords().get(1),
-					  m_object.parent.transform.getCoords().get(2));
+			globalX = x + m_object.parent.transform.getCoords().get(0);
+			globalY = y + m_object.parent.transform.getCoords().get(1);
+			globalZ = z + m_object.parent.transform.getCoords().get(2);
+		} else {
+			globalX = x;
+			globalY = y;
+			globalZ = z;
 		}
 	}
 	
@@ -18,6 +22,10 @@ public class TransformComponent extends GameObjectComponent {
 		x = xCoord;
 		y = yCoord;
 		z = zCoord;
+	}
+	
+	public Vector3f getGlobalCoords() {
+		return new Vector3f(globalX, globalY, globalZ);
 	}
 	
 	public Vector3f getCoords() {

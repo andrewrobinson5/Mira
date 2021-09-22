@@ -23,33 +23,33 @@ public class QuadRendererComponent extends RendererComponent {
 	public void onUpdate() {
 		//super.onUpdate(); // Nothing in superclass onUpdate(), commenting out for now
 		
-		quad_vertex_buffer_data[0] = bounds[0].get(0) + m_object.transform.getCoords().get(0);
-		quad_vertex_buffer_data[1] = bounds[0].get(1) + m_object.transform.getCoords().get(1);
-		quad_vertex_buffer_data[2] = bounds[0].get(2) + m_object.transform.getCoords().get(2);
+		quad_vertex_buffer_data[0] = bounds[0].get(0) + m_object.transform.getGlobalCoords().get(0);
+		quad_vertex_buffer_data[1] = bounds[0].get(1) + m_object.transform.getGlobalCoords().get(1);
+		quad_vertex_buffer_data[2] = bounds[0].get(2) + m_object.transform.getGlobalCoords().get(2);
 
 		quad_vertex_buffer_data[3] = solidColor.get(0);
 		quad_vertex_buffer_data[4] = solidColor.get(1);
 		quad_vertex_buffer_data[5] = solidColor.get(2);
 
-		quad_vertex_buffer_data[6] = bounds[1].get(0) + m_object.transform.getCoords().get(0);
-		quad_vertex_buffer_data[7] = bounds[1].get(1) + m_object.transform.getCoords().get(1);
-		quad_vertex_buffer_data[8] = bounds[1].get(2) + m_object.transform.getCoords().get(2);
+		quad_vertex_buffer_data[6] = bounds[1].get(0) + m_object.transform.getGlobalCoords().get(0);
+		quad_vertex_buffer_data[7] = bounds[1].get(1) + m_object.transform.getGlobalCoords().get(1);
+		quad_vertex_buffer_data[8] = bounds[1].get(2) + m_object.transform.getGlobalCoords().get(2);
 
 		quad_vertex_buffer_data[9] = solidColor.get(0);
 		quad_vertex_buffer_data[10] = solidColor.get(1);
 		quad_vertex_buffer_data[11] = solidColor.get(2);
 		
-		quad_vertex_buffer_data[12] = bounds[2].get(0) + m_object.transform.getCoords().get(0);
-		quad_vertex_buffer_data[13] = bounds[2].get(1) + m_object.transform.getCoords().get(1);
-		quad_vertex_buffer_data[14] = bounds[2].get(2) + m_object.transform.getCoords().get(2);
+		quad_vertex_buffer_data[12] = bounds[2].get(0) + m_object.transform.getGlobalCoords().get(0);
+		quad_vertex_buffer_data[13] = bounds[2].get(1) + m_object.transform.getGlobalCoords().get(1);
+		quad_vertex_buffer_data[14] = bounds[2].get(2) + m_object.transform.getGlobalCoords().get(2);
 
 		quad_vertex_buffer_data[15] = solidColor.get(0);
 		quad_vertex_buffer_data[16] = solidColor.get(1);
 		quad_vertex_buffer_data[17] = solidColor.get(2);
 
-		quad_vertex_buffer_data[18] = bounds[3].get(0) + m_object.transform.getCoords().get(0);
-		quad_vertex_buffer_data[19] = bounds[3].get(1) + m_object.transform.getCoords().get(1);
-		quad_vertex_buffer_data[20] = bounds[3].get(2) + m_object.transform.getCoords().get(2);
+		quad_vertex_buffer_data[18] = bounds[3].get(0) + m_object.transform.getGlobalCoords().get(0);
+		quad_vertex_buffer_data[19] = bounds[3].get(1) + m_object.transform.getGlobalCoords().get(1);
+		quad_vertex_buffer_data[20] = bounds[3].get(2) + m_object.transform.getGlobalCoords().get(2);
 
 		quad_vertex_buffer_data[21] = solidColor.get(0);
 		quad_vertex_buffer_data[22] = solidColor.get(1);

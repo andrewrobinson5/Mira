@@ -59,8 +59,6 @@ public class Game {
 		Pipe wallBottom4 = new Pipe();
 		wallBottom4.<TransformComponent>getComponent("Transform").x = 2.55f;
 		
-		wallBottom1.makeChildOf(player);
-		
 		myScene.add(wallBottom1);
 		//myScene.add(wallTop1);
 		myScene.add(wallBottom2);
