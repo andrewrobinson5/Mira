@@ -8,8 +8,64 @@ public class GameObject {
 	public TransformComponent transform;
 	public boolean hasRunOnce = false;
 	
+	//Children-parent tracking stuff
+	private ArrayList<GameObject> children = new ArrayList<GameObject>();
+	protected GameObject parent = null;
+	public int hierLevel;
+	
+	private void incrementLvlAfterParenting() {
+		if (parent == null)
+			hierLevel = 0;
+		else
+			hierLevel = parent.hierLevel;
+	
+		hierLevel++;
+		for(int childIndex = 0; childIndex < children.size(); childIndex++) {
+			children.get(childIndex).incrementLvlAfterParenting();
+		}
+	}
+	
+	private void decrementLvlAfterUnparenting() {
+		if (parent == null)
+			hierLevel = 0;
+		else
+			hierLevel = parent.hierLevel;
+		
+		hierLevel--;
+		for(int childIndex = 0; childIndex < children.size(); childIndex++) {
+			children.get(childIndex).decrementLvlAfterUnparenting();
+		}
+	}
+	
+	public void makeChildOf(GameObject l_parent) {
+		parent = l_parent;
+		l_parent.children.add(this);
+		incrementLvlAfterParenting();
+	}
+	
+	public void addChild(GameObject l_child) {
+		l_child.parent = this;
+		children.add(l_child);
+		l_child.incrementLvlAfterParenting();
+	}
+	
+	public void removeChild(GameObject l_child) {
+		l_child.parent = null;
+		l_child.hierLevel = 0;
+		children.remove(l_child);
+		l_child.decrementLvlAfterUnparenting();
+	}
+	
+	public void unParent() {
+		parent.children.remove(this);
+		parent = null;
+		hierLevel = 0;
+		decrementLvlAfterUnparenting();
+		
+	}
+	//End of children-parent tracking stuff
+	
 	public void onCreate() {
-			
 		hasRunOnce = true;
 	}
 	public void onUpdate() {}
@@ -87,6 +143,8 @@ public class GameObject {
 		
 		transform = new TransformComponent(x, y, z);
 		addComponent(transform);
+		
+		hierLevel = 0;
 	}
 	
 	public GameObject() {
@@ -96,5 +154,7 @@ public class GameObject {
 
 		transform = new TransformComponent();
 		addComponent(transform);
+		
+		hierLevel = 0;
 	}
 }

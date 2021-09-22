@@ -9,6 +9,7 @@ public class App {
 	public static Window gameWindow;
 	public static OGLRenderer renderer;
 	public static GameTime gameTimer;
+	public static Scene currentScene;
 	private Game game;
 
 	private int width, height;
@@ -39,7 +40,6 @@ public class App {
 	
 	public void loop() {
 		// set up gameLoop and run every onCreate/onUpdate for every gameObject in the current scene in Game.java
-		// at beginning of gameLoop push current and deltaTime onto timer, at end push oldTime.
 		while (!glfwWindowShouldClose(gameWindow.window)) {
 			glfwPollEvents();
 			if(glfwGetKey(gameWindow.window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -49,24 +49,50 @@ public class App {
 			game.onUpdate();
 			//TODO: iterate through every game object in scene, calling the gameObject's onCreate() once and
 			//	onUpdate() every frame, as well as each of its components onCreate() and onUpdate() functions.
-			//TODO: before I do that, I need a scene graph. Using arrayList myScene as temp.
 			
-			// The memory leak is inside this for loop. -- Several memory leaks are in this loop.
-			// CORRECTION, the memory leak IS this for loop. Apparently for-each loops inside an infinite while that iterate over a collection cause iterators to be created that aren't destroyed until garbage collected.
-			//for (GameObject g : game.myScene) {
-			for (int g = 0; g < game.myScene.size(); g++) {	
-				if (!game.myScene.get(g).hasRunOnce)
-					game.myScene.get(g).onCreate();
-
-				game.myScene.get(g).onUpdate();
-				for (int i = 0; i < game.myScene.get(g).listComponents.size(); i++) {
-					if (game.myScene.get(g).listComponents.get(i).enabled) {
-						if (!game.myScene.get(g).listComponents.get(i).hasRunOnce)
-							game.myScene.get(g).listComponents.get(i).onCreate();
-						
-						game.myScene.get(g).listComponents.get(i).onUpdate(); // big leak on this line, specifically quadRenderer
+			//TODO: iterate thru items in current scene in correct order
+			if(currentScene != null) {
+				// Iterate through all GameObject onCreates in order
+				for(int h = 0; h < currentScene.getHierarchyDepth(); h++) {
+					for (int g = 0; g < currentScene.size(); g++) {	
+						if (currentScene.get(g).hierLevel == h && !currentScene.alreadyIteratedObjects.contains(g) && !currentScene.get(g).hasRunOnce) {
+							currentScene.hierarchyHelperFunctionCreate(currentScene.get(g));
+						}
 					}
 				}
+				currentScene.alreadyIteratedObjects.clear();
+				
+				// Iterate through all GameObject onUpdates in order
+				for(int h = 0; h < currentScene.getHierarchyDepth(); h++) {
+					for (int g = 0; g < currentScene.size(); g++) {	
+						if (currentScene.get(g).hierLevel == h && !currentScene.alreadyIteratedObjects.contains(g)) {
+							currentScene.hierarchyHelperFunctionUpdate(currentScene.get(g));
+						}
+					}
+				}
+				currentScene.alreadyIteratedObjects.clear();
+					
+//				for(int h = 0; h < currentScene.getHierarchyDepth(); h++) {
+//					for (int g = 0; g < currentScene.size(); g++) {	
+//						if (currentScene.get(g).hierLevel == h && !currentScene.alreadyIteratedObjects.contains(g) && !currentScene.get(g).hasRunOnce) {
+//							currentScene.hierarchyHelperFunctionCreate(currentScene.get(g));
+//						}
+//					}
+//				}
+//				currentScene.alreadyIteratedObjects.clear();	
+					
+					
+					//this one goes through components
+//					for (int i = 0; i < currentScene.get(g).listComponents.size(); i++) {
+//						if (currentScene.get(g).listComponents.get(i).enabled) {
+//							if (!currentScene.get(g).listComponents.get(i).hasRunOnce)
+//								currentScene.get(g).listComponents.get(i).onCreate();
+//							
+//							currentScene.get(g).listComponents.get(i).onUpdate();
+//						}
+//					}
+			} else {
+				// some kind of loading screen?
 			}
 			
 			//Drawing

@@ -4,15 +4,10 @@
 //		here directly that should probably be abstracted. I have not implemented several engine features like scene
 //		loading or input handling or a better way to handle onUpdate() and onCreate(), etc... 
 
-
-//TODO: Fix memory leaks in rendering loop and elsewhere
-
 package com.PlatformerGame.game;
 
 import com.PlatformerGame.engine.core.*;
 import com.PlatformerGame.game.prefabs.*;
-
-import java.util.ArrayList;
 
 import org.joml.*;
 
@@ -20,7 +15,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Game {
 	// temporary scene arrangement before we get classes/whatever systems set up.
-	public ArrayList<GameObject> myScene = new ArrayList<GameObject>();
+	public Scene myScene = new Scene();
 	
 	private boolean canJump, paused;
 	private float playerVelocityY, pipesVelocity, gravity;
@@ -34,12 +29,15 @@ public class Game {
 	
 	public void onCreate() {
 		// important variables for this class's logic
+		
 		playerVelocityY = 0;
 		pipesVelocity = -0.5f;
 		canJump = true;
 		paused = true;
 		gravity = 6.8f;
 		
+		myScene.loadScene();
+
 		//GameObject creation and adding to scene.
 		GameObject player = new GameObject(-0.6f, 0.0f, 0.0f);
 		player.addComponent(new QuadRendererComponent(0.15f, 0.12f));
