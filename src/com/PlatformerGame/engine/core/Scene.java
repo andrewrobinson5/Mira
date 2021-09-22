@@ -6,6 +6,10 @@ public class Scene {
 	private ArrayList<GameObject> listObjects = new ArrayList<GameObject>();
 	public ArrayList<GameObject> alreadyIteratedObjects = new ArrayList<GameObject>();
 	
+	public void clear() {
+		listObjects.clear();
+	}
+	
 	public GameObject get(int i) {
 		return listObjects.get(i);
 	}
@@ -14,8 +18,16 @@ public class Scene {
 		return listObjects.size();
 	}
 	
+	// I really don't know how to do this any other way, I'll learn later
+	private void addHelperFunction(GameObject g) {
+		listObjects.add(g);
+		for(int i = 0; i < g.children.size(); i++) {
+			addHelperFunction(g.children.get(i));
+		}
+	}
+	
 	public <T extends GameObject> void add(T item) {
-		listObjects.add(item);
+		addHelperFunction(item);
 	}
 	
 	public <T extends GameObject> void delete(T item) {
@@ -68,13 +80,15 @@ public class Scene {
 
 	public void loadScene() {
 		App.currentScene = this;
-//		System.out.println(App.currentScene.);
 	}
 	
 	public void unloadScene() {
 		App.currentScene = null;
 		for (int g = 0; g < size(); g++) {	
 			get(g).hasRunOnce = false;
+			for (int f = 0; f < get(g).listComponents.size(); f++) {
+				get(g).listComponents.get(f).hasRunOnce = false;
+			}
 		}
 	}
 }

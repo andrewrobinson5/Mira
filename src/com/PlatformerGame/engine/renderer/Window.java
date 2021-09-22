@@ -1,6 +1,5 @@
 package com.PlatformerGame.engine.renderer;
 
-//import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 

@@ -83,7 +83,7 @@ public class App {
 			gameTimer.unaffectedDeltaTime = (gameTimer.currentTime-gameTimer.oldTime);
 			gameTimer.deltaTime = gameTimer.unaffectedDeltaTime*gameTimer.getTimeScale();
 			if (timer >= 1) {
-				//System.out.println(frameCounter);
+				System.out.println(frameCounter);
 				frameCounter = 0;
 				timer = 0;
 			} else {

@@ -14,18 +14,15 @@ import org.joml.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Game {
-	// temporary scene arrangement before we get classes/whatever systems set up.
 	public Scene myScene = new Scene();
 	
 	private boolean canJump, paused;
 	private float playerVelocityY, pipesVelocity, gravity;
 	
-	float[] test = {
-			-1f, 1f, 0, 0, 0, 0,
-			-1f, -1f, 0, 0, 0, 0,
-			1f, 1f, 0, 0, 0, 0,
-			1f, -1f, 0, 0, 0, 0,
-	};
+	TwoPipes wall1;
+	TwoPipes wall2;
+	TwoPipes wall3;
+	TwoPipes wall4;
 	
 	public void onCreate() {
 		// important variables for this class's logic
@@ -44,32 +41,25 @@ public class Game {
 		player.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector3f(0.1f, 0.0f, 0.8f);
 		myScene.add(player);
 		
+		wall1 = new TwoPipes();
+		wall1.<TransformComponent>getComponent("Transform").x = 0f;
 		
+		wall2= new TwoPipes();
+		wall2.<TransformComponent>getComponent("Transform").x = 0.85f;
 		
-		// Also we probably need to have two different game objects per wall. Parenting would help right about now.
-		Pipe wallBottom1 = new Pipe();
-		wallBottom1.<TransformComponent>getComponent("Transform").x = 0f;
+		wall3 = new TwoPipes();
+		wall3.<TransformComponent>getComponent("Transform").x = 1.7f;
 		
-		Pipe wallBottom2 = new Pipe();
-		wallBottom2.<TransformComponent>getComponent("Transform").x = 0.85f;
+		wall4 = new TwoPipes();
+		wall4.<TransformComponent>getComponent("Transform").x = 2.55f;
 		
-		Pipe wallBottom3 = new Pipe();
-		wallBottom3.<TransformComponent>getComponent("Transform").x = 1.7f;
-		
-		Pipe wallBottom4 = new Pipe();
-		wallBottom4.<TransformComponent>getComponent("Transform").x = 2.55f;
-		
-		myScene.add(wallBottom1);
-		//myScene.add(wallTop1);
-		myScene.add(wallBottom2);
-		//myScene.add(wallTop2);
-		myScene.add(wallBottom3);
-		//myScene.add(wallTop3);
-		myScene.add(wallBottom4);
-		//myScene.add(wallTop4);
-		
+		myScene.add(wall1);
+		myScene.add(wall2);
+		myScene.add(wall3);
+		myScene.add(wall4);
 	}	
 	
+	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject
 	public void onUpdate() {
 		// starts paused, is unpaused logic.
 		if (paused) {
@@ -95,6 +85,13 @@ public class Game {
 		} else {
 			//REPLACE THIS WITH LOSS STATE
 			playerVelocityY = 0;
+			paused = true;
+			
+			myScene.unloadScene();
+			// this is cheating haha
+			// absolutely awful. Good enough for a school project for now
+			myScene.clear();
+			onCreate();
 		}
 		
 		// Player input handling. This should probably be moved into a PlayerController extends GameObject class
@@ -113,10 +110,10 @@ public class Game {
 		//			since last frame:  velocity*deltaTime
 		myScene.get(0).<TransformComponent>getComponent("Transform").y += (playerVelocityY*App.gameTimer.deltaTime);
 		
-		myScene.get(1).<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
-		myScene.get(2).<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
-		myScene.get(3).<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
-		myScene.get(4).<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
+		wall1.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
+		wall2.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
+		wall3.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
+		wall4.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
 		
 		// also we probably ought to have a handling of IndexOutOfBoundsException eventually. Make it nicer for 
 		//	the game programmer. For now I don't mind much because I know not to do that.
