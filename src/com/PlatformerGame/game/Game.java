@@ -90,7 +90,7 @@ public class Game {
 			myScene.unloadScene();
 			// this is cheating haha
 			// absolutely awful. Good enough for a school project for now
-			myScene.clear();
+			// Really this next line restarts the entire game, except for persistent data. I won't want that in the future. I'll want to restart the scene. This can be done by using a game director object I guess.
 			onCreate();
 		}
 		

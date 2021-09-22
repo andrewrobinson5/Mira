@@ -90,5 +90,6 @@ public class Scene {
 				get(g).listComponents.get(f).hasRunOnce = false;
 			}
 		}
+		clear();
 	}
 }
