@@ -19,8 +19,6 @@ public class Pipe extends GameObject {
 			m_transform.y = (float)(Math.random()*1)-1.5f;
 			m_transform.x = 2.075f;
 		}
-
-		System.out.println("test2");
 	}
 	
 	public Pipe() {
