@@ -115,11 +115,6 @@ public class Game {
 		wall3.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
 		wall4.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
 		
-		// also we probably ought to have a handling of IndexOutOfBoundsException eventually. Make it nicer for 
-		//	the game programmer. For now I don't mind much because I know not to do that.
-		//	But really we should probably be asserting that a get() isn't exceeding the bounds of our list, so I'm
-		//  going to leave this the way it is because it functionally achieves that.
-		
 		// Really the whole myScene.get(x) is a legacy format that I'm using now because it works, but as the
 		//	project progresses it'll probably be more and more valuable to keep track of game objects and game logic
 		//  outside of this class, in their own classes and just instantiate them.

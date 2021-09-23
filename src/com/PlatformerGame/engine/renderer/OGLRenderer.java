@@ -4,26 +4,28 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import org.lwjgl.stb.STBImage;
+
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OGLRenderer {
 	private int programID;
 
 	// create array of VAOs, probably won't need this later
 	private ArrayList<Integer> listVAOs = new ArrayList<Integer>();
-	
 	// also creates array of VAOs, but only the ones that should be rendered on current frame.
 	public ArrayList<Integer> renderQueue = new ArrayList<Integer>();
 	
-	// these just aren't needed as far as I can tell
-	// Correction: I need these now. I need to keep track of these so I can delete them after rendering.
 	private ArrayList<Integer> listVBOs = new ArrayList<Integer>();
 	private ArrayList<Integer> listIndices = new ArrayList<Integer>();
+	
+	private HashMap<String, Integer> textureMap = new HashMap<String, Integer>();
 	
 	public int loadShaders(String vertex_file_path, String fragment_file_path) {
 		System.out.println("loadShaders() begin");
@@ -102,8 +104,19 @@ public class OGLRenderer {
 		return ProgramID;
 	}
 	
+	public int loadTexture(String texture) {
+		if(textureMap.containsKey(texture)) {
+			return textureMap.get(texture);
+		}
+		return 0;
+	}
+	
 	public void addToRenderQueue(int l_vao) {
 		renderQueue.add(l_vao);
+	}
+	
+	public void createTexturedMesh(float[] vertBuf, int[] indexBuf, int texLocation) {
+		// Create mesh with vertBuf vertices, indexBuf indices, and render a texture to it.
 	}
 	
 	public void createMesh(float[] vertBuf, int[] indexBuf) {
