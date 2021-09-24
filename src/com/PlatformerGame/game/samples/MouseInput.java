@@ -31,7 +31,7 @@ public class MouseInput {
 	public void onCreate() {
 		GameObject cursor = new GameObject();
 		cursor.addComponent(new QuadRendererComponent(0.15f, 0.15f));
-		cursor.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector3f(0.8f, 0, 0.2f);
+		cursor.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector4f(0.8f, 0, 0.2f, 1f);
 		myScene.add(cursor);
 	}
 	

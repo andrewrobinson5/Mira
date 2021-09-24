@@ -25,6 +25,7 @@ public class OGLRenderer {
 	private ArrayList<Integer> listVBOs = new ArrayList<Integer>();
 	private ArrayList<Integer> listIndices = new ArrayList<Integer>();
 	
+	// This will hold all of the texture data before passing it to opengl
 	private HashMap<String, Integer> textureMap = new HashMap<String, Integer>();
 	
 	public int loadShaders(String vertex_file_path, String fragment_file_path) {
@@ -104,12 +105,14 @@ public class OGLRenderer {
 		return ProgramID;
 	}
 	
-	public int loadTexture(String texture) {
-		if(textureMap.containsKey(texture)) {
-			return textureMap.get(texture);
-		}
-		return 0;
-	}
+//	public int loadTexture(String texture) {
+//		// We need to check if the texture is in the textureMap already, and if it is we won't need to reload it
+//		if(textureMap.containsKey(texture)) {
+//			return textureMap.get(texture);
+//		}
+//		// but if it isn't, then we'll load the texture with STBImage, store the string in textureMap, and then return the integer associated with the texture.
+//		return 0;
+//	}
 	
 	public void addToRenderQueue(int l_vao) {
 		renderQueue.add(l_vao);
@@ -117,11 +120,45 @@ public class OGLRenderer {
 	
 	public void createTexturedMesh(float[] vertBuf, int[] indexBuf, int texLocation) {
 		// Create mesh with vertBuf vertices, indexBuf indices, and render a texture to it.
+		listVBOs.add(glCreateBuffers());
+		listIndices.add(glCreateBuffers());
+		listVAOs.add(glCreateVertexArrays());
+
+		// Binds the most recently created VAO.
+		glBindVertexArray(listVAOs.get(listVAOs.size()-1));
+		
+		// THEN DOWN HERE, We'll use texLocation, which is the integer associated with our texture in textureMap.
+		// We'll then grab the texture and send it off to openGl.
+		// TODO: That^
+		
+		
+		
+		
+		
+		
+		// In the meanwhile, I'd like to figure out how to make a String texture by hand. This will come in handy when we move the interface of QuadRendererComponent entirely to this function, because we can just gen
+		//		the texture on our own on the CPU really quickly based on the SolidColor variable or a material or something.
+		//		Somewhere down the line, I'd like to have materials stored in a file before runtime and that file referenced by the renderer.
+
+		glBindBuffer(GL_ARRAY_BUFFER, listVBOs.get(listVBOs.size()-1));
+		glBufferData(GL_ARRAY_BUFFER, vertBuf, GL_STATIC_DRAW);
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, listIndices.get(listIndices.size()-1));
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuf, GL_STATIC_DRAW);
+		
+		glVertexAttribPointer(0, 3,	GL_FLOAT, false, 9*Float.BYTES, NULL);
+		glEnableVertexAttribArray(0);
+		
+		glVertexAttribPointer(1, 4, GL_FLOAT, false, 9*Float.BYTES, NULL + (3*Float.BYTES));
+		glEnableVertexAttribArray(1);
+		
+		glVertexAttribPointer(2, 2, GL_FLOAT, false, 9*Float.BYTES, NULL + (7*Float.BYTES));
+		glEnableVertexAttribArray(2);
+		
+		addToRenderQueue(listVAOs.get(listVAOs.size()-1));
 	}
 	
 	public void createMesh(float[] vertBuf, int[] indexBuf) {
-		// I think the issue may be that I'm creating a new indexBuffer and vertexBuffer for each object every frame. I should find a way to check and see if there's already an index and vertex buffer for a single object.
-		// UPDATE: It was in fact the issue.
 		listVBOs.add(glCreateBuffers());
 		listIndices.add(glCreateBuffers());
 		
@@ -146,9 +183,9 @@ public class OGLRenderer {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, listIndices.get(listIndices.size()-1));
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuf, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3,	GL_FLOAT, false, 6 * 4,	NULL);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4,	NULL + (3*4));
+		glVertexAttribPointer(0, 3,	GL_FLOAT, false, 7*Float.BYTES,	NULL);
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, false, 7*Float.BYTES, NULL + (3*Float.BYTES));
 		glEnableVertexAttribArray(1);
 		
 		addToRenderQueue(listVAOs.get(listVAOs.size()-1));

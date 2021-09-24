@@ -38,7 +38,7 @@ public class Game {
 		//GameObject creation and adding to scene.
 		GameObject player = new GameObject(-0.6f, 0.0f, 0.0f);
 		player.addComponent(new QuadRendererComponent(0.15f, 0.12f));
-		player.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector3f(0.1f, 0.0f, 0.8f);
+		player.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector4f(0.1f, 0.0f, 0.8f, 1f);
 		myScene.add(player);
 		
 		wall1 = new TwoPipes();
