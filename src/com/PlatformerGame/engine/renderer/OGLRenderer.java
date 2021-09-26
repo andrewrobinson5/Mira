@@ -4,7 +4,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import org.lwjgl.stb.STBImage;
+import com.PlatformerGame.engine.core.Texture;
 
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class OGLRenderer {
 	private int programID;
@@ -24,9 +23,6 @@ public class OGLRenderer {
 	
 	private ArrayList<Integer> listVBOs = new ArrayList<Integer>();
 	private ArrayList<Integer> listIndices = new ArrayList<Integer>();
-	
-	// This will hold all of the texture data before passing it to opengl
-	private HashMap<String, Integer> textureMap = new HashMap<String, Integer>();
 	
 	public int loadShaders(String vertex_file_path, String fragment_file_path) {
 		System.out.println("loadShaders() begin");
@@ -105,20 +101,11 @@ public class OGLRenderer {
 		return ProgramID;
 	}
 	
-//	public int loadTexture(String texture) {
-//		// We need to check if the texture is in the textureMap already, and if it is we won't need to reload it
-//		if(textureMap.containsKey(texture)) {
-//			return textureMap.get(texture);
-//		}
-//		// but if it isn't, then we'll load the texture with STBImage, store the string in textureMap, and then return the integer associated with the texture.
-//		return 0;
-//	}
-	
 	public void addToRenderQueue(int l_vao) {
 		renderQueue.add(l_vao);
 	}
 	
-	public void createTexturedMesh(float[] vertBuf, int[] indexBuf, int texLocation) {
+	public void createTexturedMesh(float[] vertBuf, int[] indexBuf, Texture tex) {
 		// Create mesh with vertBuf vertices, indexBuf indices, and render a texture to it.
 		listVBOs.add(glCreateBuffers());
 		listIndices.add(glCreateBuffers());
@@ -127,19 +114,8 @@ public class OGLRenderer {
 		// Binds the most recently created VAO.
 		glBindVertexArray(listVAOs.get(listVAOs.size()-1));
 		
-		// THEN DOWN HERE, We'll use texLocation, which is the integer associated with our texture in textureMap.
-		// We'll then grab the texture and send it off to openGl.
-		// TODO: That^
 		
 		
-		
-		
-		
-		
-		// In the meanwhile, I'd like to figure out how to make a String texture by hand. This will come in handy when we move the interface of QuadRendererComponent entirely to this function, because we can just gen
-		//		the texture on our own on the CPU really quickly based on the SolidColor variable or a material or something.
-		//		Somewhere down the line, I'd like to have materials stored in a file before runtime and that file referenced by the renderer.
-
 		glBindBuffer(GL_ARRAY_BUFFER, listVBOs.get(listVBOs.size()-1));
 		glBufferData(GL_ARRAY_BUFFER, vertBuf, GL_STATIC_DRAW);
 		
@@ -161,17 +137,6 @@ public class OGLRenderer {
 	public void createMesh(float[] vertBuf, int[] indexBuf) {
 		listVBOs.add(glCreateBuffers());
 		listIndices.add(glCreateBuffers());
-		
-		// Syntactically, glCreateVertexArrays is the same as glGenVertexArrays.
-		// The difference between the two methods is that glGenVertexArrays() only
-		//  returns an int ID of the vertex array and marks it as used, but it
-		//  is not initialized until bound. glCreateVertexArrays() returns an int
-		//  pointing to a vertex array that's initialized at creation, (and whose state can be accessed directly?).
-		
-		// This is how you would create multiple Vertex Array Objects at once.
-		//int VertexArrays[] = new int[1];
-		//glCreateVertexArrays(VertexArrays);
-		//glBindVertexArray(VertexArrays[0]);
 		
 		listVAOs.add(glCreateVertexArrays());
 
@@ -203,12 +168,10 @@ public class OGLRenderer {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 	
-	// DONE: add a proper renderer update and render queue
-	// THIS SHOULD PROBABLY CLEAR VAOs AND RENDER QUEUE AFTER EVERY FRAME
-	// AND ONLY RENDER WHAT IS CURRENTLY IN THE RENDER QUEUE AT THE TIME OF EXECUTION
 	public void updateRender(Window gameWindow) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		for (int i = 0; i!=renderQueue.size(); i++) {
+//			glBindTexture(GL_TEXTURE_2D, 1);
 			draw(renderQueue.get(i));
 		}
 		
@@ -233,8 +196,12 @@ public class OGLRenderer {
 	}
 	
 	public OGLRenderer() {
-		// Setup Clear Color. Will probably change to white or something later.
+		// Setup openGL default behaviors. I probably won't want to change these but I might.
+		//   If I do, I'll create a function restoreDefaults() and put these there instead.
 		glClearColor(0.3f, 0.2f, 0.5f, 0.0f);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
 		// create default shaders
 		programID = loadShaders("/shaders/shader_vert.glsl", "/shaders/shader_frag.glsl");
 	}

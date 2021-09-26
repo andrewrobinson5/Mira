@@ -81,6 +81,7 @@ public class App {
 			// GameTimer handling
 			gameTimer.currentTime = glfwGetTime();
 			gameTimer.unaffectedDeltaTime = (gameTimer.currentTime-gameTimer.oldTime);
+//			System.out.println(gameTimer.unaffectedDeltaTime);
 			gameTimer.deltaTime = gameTimer.unaffectedDeltaTime*gameTimer.getTimeScale();
 			if (timer >= 1) {
 				System.out.println(frameCounter);
@@ -93,17 +94,17 @@ public class App {
 			gameTimer.oldTime = gameTimer.currentTime;
 			
 			// Sleep to avoid resource hogging
-			while (maxFPSTimer < 0.008333) {
-				Thread.yield();
-				
-				//sleep for 1ms
-				try {
-					Thread.sleep(1);
-				} catch(Exception e) {} 
-				
-				maxFPSTimer += gameTimer.unaffectedDeltaTime;
-			}
-			maxFPSTimer = 0;
+//			while (maxFPSTimer < 0.008333) {
+//				Thread.yield();
+//				
+//				//sleep for 1ms
+//				try {
+//					Thread.sleep(1);
+//				} catch(Exception e) {} 
+//				
+//				maxFPSTimer += gameTimer.unaffectedDeltaTime;
+//			}
+//			maxFPSTimer = 0;
 			frameCounter++;
 			
 			// Asks politely for garbage to be collected every minute.

@@ -10,6 +10,7 @@ public class QuadRendererComponent extends RendererComponent {
 	public Vector3f[] bounds = new Vector3f[4];
 	
 	public Vector4f solidColor = new Vector4f(0, 0, 0, 0);
+	public Texture tex = new Texture("/textures/pipe.png");
 	
 	private OGLRenderer m_renderer = App.renderer;
 	
@@ -58,7 +59,7 @@ public class QuadRendererComponent extends RendererComponent {
 				1f, -1f,
 		};
 		
-		m_renderer.createTexturedMesh(quad_vertex_buffer_data, quad_vertex_indices_data, 1);
+		m_renderer.createTexturedMesh(quad_vertex_buffer_data, quad_vertex_indices_data, tex);
 	}	
 	
 	// This interface is so much nicer to work with!
