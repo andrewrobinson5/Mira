@@ -18,9 +18,9 @@ public class PipeTop extends GameObject {
 	}
 	
 	public PipeTop() {
-		//super(0f, ((float)(Math.random()*1)-1.5f), 0);
 		transform.y = 1.2f;
+		transform.z = -0.5f;
 		this.<QuadRendererComponent>addComponent(new QuadRendererComponent(0.3f, 1.8f));
-		this.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector4f(0.0f, 0.5f, 0.0f, 1f);
+		this.<QuadRendererComponent>getComponent("QuadRenderer").tex = new Texture("/textures/pipe.png");
 	}
 }

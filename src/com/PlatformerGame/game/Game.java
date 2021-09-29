@@ -37,8 +37,9 @@ public class Game {
 
 		//GameObject creation and adding to scene.
 		GameObject player = new GameObject(-0.6f, 0.0f, 0.0f);
-		player.addComponent(new QuadRendererComponent(0.15f, 0.12f));
-		player.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector4f(0.1f, 0.0f, 0.8f, 1f);
+		player.addComponent(new QuadRendererComponent(0.2f, 0.16f));
+		player.<QuadRendererComponent>getComponent("QuadRenderer").tex = new Texture("/textures/bird.png");
+//		player.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector4f(0.1f, 0.0f, 0.8f, 1f);
 		myScene.add(player);
 		
 		wall1 = new TwoPipes();
@@ -53,10 +54,16 @@ public class Game {
 		wall4 = new TwoPipes();
 		wall4.<TransformComponent>getComponent("Transform").x = 2.55f;
 		
+		GameObject backdrop = new GameObject(0, 0, 0.8f);
+		backdrop.addComponent(new QuadRendererComponent(2.1f, 2.1f));
+		backdrop.<QuadRendererComponent>getComponent("QuadRenderer").tex = new Texture("/textures/backdrop.png");
+		
 		myScene.add(wall1);
 		myScene.add(wall2);
 		myScene.add(wall3);
 		myScene.add(wall4);
+		
+		myScene.add(backdrop);
 	}	
 	
 	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject

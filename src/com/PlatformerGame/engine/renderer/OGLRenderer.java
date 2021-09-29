@@ -12,12 +12,16 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OGLRenderer {
-	private int programID;
+	public int shaderSolidColor;
+	public int shaderTexture;
 
 	// create array of VAOs, probably won't need this later
 	private ArrayList<Integer> listVAOs = new ArrayList<Integer>();
+	private HashMap<Integer, ArrayList<Integer>> VAOParams = new HashMap<Integer, ArrayList<Integer>>();
+	
 	// also creates array of VAOs, but only the ones that should be rendered on current frame.
 	public ArrayList<Integer> renderQueue = new ArrayList<Integer>();
 	
@@ -131,6 +135,13 @@ public class OGLRenderer {
 		glVertexAttribPointer(2, 2, GL_FLOAT, false, 9*Float.BYTES, NULL + (7*Float.BYTES));
 		glEnableVertexAttribArray(2);
 		
+		ArrayList<Integer> tmpParams = new ArrayList<Integer>();
+		// Add shader to use to arraylist
+		tmpParams.add(shaderTexture);
+		// Add texture to arraylist
+		tmpParams.add(tex.myLocation);
+		VAOParams.put(listVAOs.get(listVAOs.size()-1), tmpParams);
+		
 		addToRenderQueue(listVAOs.get(listVAOs.size()-1));
 	}
 	
@@ -153,11 +164,18 @@ public class OGLRenderer {
 		glVertexAttribPointer(1, 4, GL_FLOAT, false, 7*Float.BYTES, NULL + (3*Float.BYTES));
 		glEnableVertexAttribArray(1);
 		
+		ArrayList<Integer> tmpParams = new ArrayList<Integer>();
+		// Add shader to use to arraylist
+		tmpParams.add(shaderSolidColor);
+		// Add texture to arraylist -- negative one means doesn't exist, since GL uses unsigned ints
+		tmpParams.add(-1);
+		VAOParams.put(listVAOs.get(listVAOs.size()-1), tmpParams);
+		
 		addToRenderQueue(listVAOs.get(listVAOs.size()-1));
 	}
 	
 	public void draw(int l_vao) {
-		glUseProgram(programID);
+		glUseProgram(shaderTexture);
 		glBindVertexArray(l_vao);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
@@ -170,9 +188,13 @@ public class OGLRenderer {
 	
 	public void updateRender(Window gameWindow) {
 		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
 		for (int i = 0; i!=renderQueue.size(); i++) {
-//			glBindTexture(GL_TEXTURE_2D, 1);
-			draw(renderQueue.get(i));
+			// If texture is not empty, bind texture
+			if(VAOParams.get(renderQueue.get(i)).get(1) != -1) {
+				glBindTexture(GL_TEXTURE_2D, VAOParams.get(renderQueue.get(i)).get(1));
+			}
+			draw(renderQueue.get(i), VAOParams.get(renderQueue.get(i)).get(0));
 		}
 		
 		glfwSwapBuffers(gameWindow.window);
@@ -198,11 +220,13 @@ public class OGLRenderer {
 	public OGLRenderer() {
 		// Setup openGL default behaviors. I probably won't want to change these but I might.
 		//   If I do, I'll create a function restoreDefaults() and put these there instead.
+		glEnable(GL_DEPTH_TEST);
 		glClearColor(0.3f, 0.2f, 0.5f, 0.0f);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		
 		// create default shaders
-		programID = loadShaders("/shaders/shader_vert.glsl", "/shaders/shader_frag.glsl");
+		shaderTexture = loadShaders("/shaders/shader_vert.glsl", "/shaders/shader_frag.glsl");
+		shaderSolidColor = loadShaders("/shaders/shader_vert.glsl", "/shaders/shader_frag_solid.glsl");
 	}
 }

@@ -94,26 +94,26 @@ public class App {
 			gameTimer.oldTime = gameTimer.currentTime;
 			
 			// Sleep to avoid resource hogging
-//			while (maxFPSTimer < 0.008333) {
-//				Thread.yield();
-//				
-//				//sleep for 1ms
-//				try {
-//					Thread.sleep(1);
-//				} catch(Exception e) {} 
-//				
-//				maxFPSTimer += gameTimer.unaffectedDeltaTime;
-//			}
-//			maxFPSTimer = 0;
+			while (maxFPSTimer < 0.008333) {
+				Thread.yield();
+				
+				//sleep for 1ms
+				try {
+					Thread.sleep(1);
+				} catch(Exception e) {} 
+				
+				maxFPSTimer += gameTimer.unaffectedDeltaTime;
+			}
+			maxFPSTimer = 0;
 			frameCounter++;
 			
 			// Asks politely for garbage to be collected every minute.
-			if (gcTimer >= 60) {
-				System.gc();
-				gcTimer = 0;
-			} else {
-				gcTimer += gameTimer.unaffectedDeltaTime;
-			}
+//			if (gcTimer >= 60) {
+//				System.gc();
+//				gcTimer = 0;
+//			} else {
+//				gcTimer += gameTimer.unaffectedDeltaTime;
+//			}
 		}
 		
 	}

@@ -1,20 +1,20 @@
 package com.PlatformerGame.engine.core;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL45.*;
+
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
 public class Texture {
 	// Having this static HashMap lets us keep track of the texture created by opengl
-	private static HashMap<String, Integer> textureMap = new HashMap<String, Integer>();
-	public static int myLocation;
+	public static HashMap<String, Integer> textureMap = new HashMap<String, Integer>();
+	public int myLocation;
 
 	public int getTexture (String textureURL) {
 		// We need to check if the texture is in the textureMap already, and if it is we won't need to reload it
@@ -40,15 +40,17 @@ public class Texture {
 			//String path = file.getAbsolutePath();
 			String path = file.getPath();
 			path = path.replace("file:\\", "");
+			path = path.replace("%20", " ");
 			
 			//STB Image (public domain lib) converts PNG we passed to it to openGL usable RGBA data
+			STBImage.stbi_set_flip_vertically_on_load(true);  
 			imgBuf = STBImage.stbi_load(path, w, h, channels, 4);
 			imgWidth = w.get();
 			imgHeight = h.get();
 		
 			if (imgBuf == null)
 				throw new RuntimeException("Unable to load texture file '" + path + "'");
-		
+			
 			// Quickly store the loaded texture into our hashmap so we don't have to reload it later
 			// This is what we're actually keeping track of - it's sort of a "pointer" to VRAM where the texture is really stored.
 			int texID = glGenTextures();
@@ -67,10 +69,11 @@ public class Texture {
 			
 			//Free this image from stack to keep the stack from running out of space
 			STBImage.stbi_image_free(imgBuf);
-			System.out.println(imgWidth + "x" + imgHeight);
+//			System.out.println(imgWidth + "x" + imgHeight);
 		}
 	}
 	
+	//Create texture from image
 	public Texture(String location) {
 		while(getTexture(location) == -1)
 			loadTexture(location);

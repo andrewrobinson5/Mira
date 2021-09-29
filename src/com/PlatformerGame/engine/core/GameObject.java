@@ -72,6 +72,7 @@ public class GameObject {
 		
 	}
 	
+	// Component Pattern implementation
 	public <T extends GameObjectComponent> int addComponent(T component) {
 		boolean nameExists = false;
 		for (GameObjectComponent comp : listComponents) {
