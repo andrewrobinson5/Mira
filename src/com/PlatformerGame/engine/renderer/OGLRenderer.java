@@ -193,6 +193,8 @@ public class OGLRenderer {
 			// If texture is not empty, bind texture
 			if(VAOParams.get(renderQueue.get(i)).get(1) != -1) {
 				glBindTexture(GL_TEXTURE_2D, VAOParams.get(renderQueue.get(i)).get(1));
+			} else {
+				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 			draw(renderQueue.get(i), VAOParams.get(renderQueue.get(i)).get(0));
 		}
@@ -200,7 +202,6 @@ public class OGLRenderer {
 		glfwSwapBuffers(gameWindow.window);
 		renderQueue.clear();
 		
-		// This fixes most of the memory leak. Thank God.
 		for (int i = 0; i < listVAOs.size(); i++) {
 			glDeleteVertexArrays(listVAOs.get(i));
 		}
@@ -220,8 +221,14 @@ public class OGLRenderer {
 	public OGLRenderer() {
 		// Setup openGL default behaviors. I probably won't want to change these but I might.
 		//   If I do, I'll create a function restoreDefaults() and put these there instead.
+		
+		//Draw things in the right order
 		glEnable(GL_DEPTH_TEST);
-		glClearColor(0.3f, 0.2f, 0.5f, 0.0f);
+		//Enable transparency blending
+//		glEnable(GL_BLEND);
+//		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+		//stupid color that shouldn't really be seen that much
+		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		

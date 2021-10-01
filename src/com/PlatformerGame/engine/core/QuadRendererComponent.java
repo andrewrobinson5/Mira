@@ -11,7 +11,9 @@ public class QuadRendererComponent extends RendererComponent {
 	
 	public Vector4f solidColor = new Vector4f(0, 0, 0, 0);
 	public Texture tex;
-//	public Texture tex = new Texture("/textures/pipe.png");
+
+	public float tileX = 1;
+	public float tileY = 1;
 	
 	private OGLRenderer m_renderer = App.renderer;
 	
@@ -29,8 +31,8 @@ public class QuadRendererComponent extends RendererComponent {
 		quad_vertex_buffer_data[4] = solidColor.get(1);
 		quad_vertex_buffer_data[5] = solidColor.get(2);
 		quad_vertex_buffer_data[6] = solidColor.get(3);
-		quad_vertex_buffer_data[7] = -1f;
-		quad_vertex_buffer_data[8] = 1f;
+		quad_vertex_buffer_data[7] = -1f * tileX;
+		quad_vertex_buffer_data[8] = 1f * tileY;
 		
 		quad_vertex_buffer_data[9] = bounds[1].get(0) + m_object.transform.getGlobalCoords().get(0);
 		quad_vertex_buffer_data[10] = bounds[1].get(1) + m_object.transform.getGlobalCoords().get(1);
@@ -39,8 +41,8 @@ public class QuadRendererComponent extends RendererComponent {
 		quad_vertex_buffer_data[13] = solidColor.get(1);
 		quad_vertex_buffer_data[14] = solidColor.get(2);
 		quad_vertex_buffer_data[15] = solidColor.get(3);
-		quad_vertex_buffer_data[16] = 1f;
-		quad_vertex_buffer_data[17] = 1f;
+		quad_vertex_buffer_data[16] = 1f * tileX;
+		quad_vertex_buffer_data[17] = 1f * tileY;
 		
 		quad_vertex_buffer_data[18] = bounds[2].get(0) + m_object.transform.getGlobalCoords().get(0);
 		quad_vertex_buffer_data[19] = bounds[2].get(1) + m_object.transform.getGlobalCoords().get(1);
@@ -49,8 +51,8 @@ public class QuadRendererComponent extends RendererComponent {
 		quad_vertex_buffer_data[22] = solidColor.get(1);
 		quad_vertex_buffer_data[23] = solidColor.get(2);
 		quad_vertex_buffer_data[24] = solidColor.get(3);
-		quad_vertex_buffer_data[25] = -1f;
-		quad_vertex_buffer_data[26] = -1f;
+		quad_vertex_buffer_data[25] = -1f * tileX;
+		quad_vertex_buffer_data[26] = -1f * tileY;
 		
 		quad_vertex_buffer_data[27] = bounds[3].get(0) + m_object.transform.getGlobalCoords().get(0);
 		quad_vertex_buffer_data[28] = bounds[3].get(1) + m_object.transform.getGlobalCoords().get(1);
@@ -59,8 +61,8 @@ public class QuadRendererComponent extends RendererComponent {
 		quad_vertex_buffer_data[31] = solidColor.get(1);
 		quad_vertex_buffer_data[32] = solidColor.get(2);
 		quad_vertex_buffer_data[33] = solidColor.get(3);
-		quad_vertex_buffer_data[34] = 1f;
-		quad_vertex_buffer_data[35] = -1f;
+		quad_vertex_buffer_data[34] = 1f * tileX;
+		quad_vertex_buffer_data[35] = -1f * tileY;
 	}
 	
 	private void updatePositionUntextured() {

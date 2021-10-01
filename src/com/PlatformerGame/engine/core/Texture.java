@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import static org.lwjgl.opengl.GL45.*;
 
@@ -71,6 +72,27 @@ public class Texture {
 			STBImage.stbi_image_free(imgBuf);
 //			System.out.println(imgWidth + "x" + imgHeight);
 		}
+	}
+	
+	//ONLY USE IF YOU ARE DONE WITH ALL OBJECTS THAT CURRENTLY USE TEXTURE
+	// TODO: Make it reload if texture doesn't exist and an object is still using it.
+	public void freeTexture() {
+		//Free texture from VRAM
+		glDeleteTextures(myLocation);
+		
+		//Delete Hashmap Entry containing myLocation as a value
+		Iterator<HashMap.Entry<String, Integer> >
+			iterator = textureMap.entrySet().iterator();
+
+	    while (iterator.hasNext()) {
+	        HashMap.Entry<String, Integer> entry = iterator.next();
+	        if (myLocation == entry.getValue()) {
+	            iterator.remove();
+	        }
+	    }
+
+	    // Let OGLRenderer know that there is no texture available.
+	    myLocation = -1;
 	}
 	
 	//Create texture from image

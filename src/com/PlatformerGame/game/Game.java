@@ -9,8 +9,6 @@ package com.PlatformerGame.game;
 import com.PlatformerGame.engine.core.*;
 import com.PlatformerGame.game.prefabs.*;
 
-import org.joml.*;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Game {
@@ -24,9 +22,9 @@ public class Game {
 	TwoPipes wall3;
 	TwoPipes wall4;
 	
+	Sound jumpSound = new Sound("/sounds/jump.ogg");
+	
 	public void onCreate() {
-		// important variables for this class's logic
-		
 		playerVelocityY = 0;
 		pipesVelocity = -0.5f;
 		canJump = true;
@@ -57,6 +55,7 @@ public class Game {
 		GameObject backdrop = new GameObject(0, 0, 0.8f);
 		backdrop.addComponent(new QuadRendererComponent(2.1f, 2.1f));
 		backdrop.<QuadRendererComponent>getComponent("QuadRenderer").tex = new Texture("/textures/backdrop.png");
+		backdrop.<QuadRendererComponent>getComponent("QuadRenderer").tileX = 2.2f;
 		
 		myScene.add(wall1);
 		myScene.add(wall2);
@@ -64,6 +63,7 @@ public class Game {
 		myScene.add(wall4);
 		
 		myScene.add(backdrop);
+		jumpSound.startSound();
 	}	
 	
 	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject
@@ -108,6 +108,8 @@ public class Game {
 			playerVelocityY = 2.1f;
 			// prevents jump spam from holding down space for longer than 1 frame
 			canJump = false;
+			//play sound test
+			jumpSound.playSound();
 		}
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
 			canJump = true;
