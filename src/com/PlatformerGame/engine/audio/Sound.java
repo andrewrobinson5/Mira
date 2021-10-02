@@ -1,10 +1,27 @@
-package com.PlatformerGame.engine.core;
+package com.PlatformerGame.engine.audio;
 
 import org.joml.Vector3f;
 //import org.lwjgl.openal.*;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
 
+import com.PlatformerGame.engine.core.App;
+
+import static org.lwjgl.openal.AL10.AL_BUFFER;
+import static org.lwjgl.openal.AL10.AL_FORMAT_MONO16;
+import static org.lwjgl.openal.AL10.AL_FORMAT_STEREO16;
+import static org.lwjgl.openal.AL10.AL_NO_ERROR;
+import static org.lwjgl.openal.AL10.AL_ORIENTATION;
+import static org.lwjgl.openal.AL10.AL_POSITION;
+import static org.lwjgl.openal.AL10.AL_SOURCE_RELATIVE;
+import static org.lwjgl.openal.AL10.AL_TRUE;
+import static org.lwjgl.openal.AL10.AL_VELOCITY;
+import static org.lwjgl.openal.AL10.alBufferData;
+import static org.lwjgl.openal.AL10.alGenBuffers;
+import static org.lwjgl.openal.AL10.alGenSources;
+import static org.lwjgl.openal.AL10.alGetError;
+import static org.lwjgl.openal.AL10.alListenerfv;
+import static org.lwjgl.openal.AL10.alSourcei;
 import static org.lwjgl.openal.AL11.*;
 
 import java.io.File;
@@ -20,48 +37,13 @@ public class Sound {
 	
 	private int buffer;
 	private int source;
-	private int ch;
-	private int smplRate;
 	
-	//Playback Speed manipulation
-	//private float speed;
+	public int getSource() {
+		return Integer.valueOf(source);
+	}
 	
 	public int getBufferId() {
 		return buffer;
-	}
-	
-	private boolean loadSound(String file) {
-		// Url of the sound file
-		URL soundUrl = Sound.class.getResource("/res/" + file);
-		File soundFile = new File(soundUrl.toExternalForm());
-		String path = soundFile.getPath();
-		path = path.replace("file:\\", "");
-		path = path.replace("%20", " ");
-					
-		
-		buffer = alGenBuffers();
-		if(alGetError() != AL_NO_ERROR) {
-			return false;
-		}
-		
-		try (MemoryStack stack = MemoryStack.stackPush()) {
-			//Load audio data from file into stack buffer
-			IntBuffer channels = stack.mallocInt(1);
-			IntBuffer sampleRate = stack.mallocInt(1);
-			
-			ShortBuffer sndBuf = STBVorbis.stb_vorbis_decode_filename(path, channels, sampleRate);
-			
-			ch = channels.get();
-			smplRate = sampleRate.get();
-			
-			//Load audio data stack buffer into openAL buffer
-			alBufferData(buffer, ch == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, sndBuf, smplRate);
-			
-			//Clean up STBVorbis loading stuff
-			
-		}
-		
-		return true;
 	}
 	
 	public void startSound() {
@@ -69,8 +51,6 @@ public class Sound {
 		source = alGenSources();
 		
 		if(isGlobal) {
-			alListener3f(AL_POSITION, position.x, position.y, position.z);
-	        alListener3f(AL_VELOCITY, 0, 0, 0);
 			alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
 			position.set(0, 0, 0);
 		}
@@ -103,7 +83,8 @@ public class Sound {
 		isGlobal = true;
 		isLooping = false;
 		
-		if(!loadSound(soundLoc)) {
+		source = ALAudioRenderer.loadSound(soundLoc);
+		if(source == 0) {
 			throw new RuntimeException("Failed to load sound");
 		}
 	}

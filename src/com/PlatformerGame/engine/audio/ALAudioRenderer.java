@@ -4,8 +4,6 @@ import org.lwjgl.openal.*;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
 
-import com.PlatformerGame.engine.core.Sound;
-
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.io.File;
@@ -19,17 +17,82 @@ import static org.lwjgl.openal.ALC11.*;
 public class ALAudioRenderer {
 	private long alDevice;
 	private long context;
-	int source;
+	
+	public String defaultDevice;
+	public String listALDevices;
+	
+	public static int loadSound(String filename) {
+		int source;
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			URL soundUrl = Sound.class.getResource("/res/" + filename);
+			File soundFile = new File(soundUrl.toExternalForm());
+			String path = soundFile.getPath();
+			path = path.replace("file:\\", "");
+			path = path.replace("%20", " ");
+			
+			int buffer = alGenBuffers();
+			int error = alGetError();
+			if(error != AL_NO_ERROR) {
+				System.out.println("Error at alGenBuffers: " + error);
+			}
+			
+			//Load audio data from file into stack buffer
+			IntBuffer channels = stack.mallocInt(1);
+			IntBuffer sampleRate = stack.mallocInt(1);
+			
+			ShortBuffer sndBuf = STBVorbis.stb_vorbis_decode_filename(path, channels, sampleRate);
+			if(sndBuf == null) {
+				System.out.println("Failure to load '" + path + "'");
+			}
+			
+			int ch = channels.get();
+			int smplRate = sampleRate.get();
+			
+			//Load audio data stack buffer into openAL buffer
+			alBufferData(buffer, ch == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, sndBuf, smplRate);
+			error = alGetError();
+			if(error != AL_NO_ERROR) {
+				System.out.println("Failure to load '" + path + "' into OpenAL buffer: " + alGetError());
+			}
+			
+			//create audio sources
+			source = alGenSources();
+			error = alGetError();
+			if(error != AL_NO_ERROR) {
+				System.out.println("Failure to create OpenAL Source: " + alGetError());
+			}
+			alSourcei(source, AL_BUFFER, buffer);
+			
+			//set up listener
+			//This is fine for a default. We'll also want this to be overridable by a listenerComponent,
+			// as well as switching between listeners rapidly to deal with multiple listeners, I THINK
+			alListenerfv(AL_POSITION, new float[] {
+					0, 0, 0
+			});
+			alListenerfv(AL_VELOCITY, new float[] {
+					0, 0, 0
+			});
+			alListenerfv(AL_ORIENTATION, new float[] {
+					0, 0, -1f, 0, 1.0f, 0
+			});
+			
+			return source;
+		}
+	}
+	
+	public void playSound(Sound sound) {
+		alSourcePlay(sound.getSource());
+	}
 	
 	public ALAudioRenderer() {
 		//Create device
-		
-		//these both do the same thing, I'm just learning extensions
-		//if(alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT")) {
-		//	alDevice = alcOpenDevice(alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER));
-		//} else {
-		alDevice = alcOpenDevice((String) null);
-		//}
+		if(alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT")) {
+			defaultDevice = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+			listALDevices = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);
+			alDevice = alcOpenDevice(defaultDevice);
+		} else {
+			alDevice = alcOpenDevice((String) null);
+		}
 		
 		//Create context in device
 		if(alDevice != NULL) {
@@ -47,58 +110,8 @@ public class ALAudioRenderer {
 			System.out.println("Unable to open OpenAL device. Audio may not work!");
 		}
 		
-		//load test file
-		try {
-			// Url of the sound file
-			URL soundUrl = Sound.class.getResource("/res/sounds/jump.ogg");
-			File soundFile = new File(soundUrl.toExternalForm());
-			String path = soundFile.getPath();
-			path = path.replace("file:\\", "");
-			path = path.replace("%20", " ");
-						
-			
-			int buffer = alGenBuffers();
-			if(alGetError() != AL_NO_ERROR) {
-				
-			}
-			
-			try (MemoryStack stack = MemoryStack.stackPush()) {
-				//Load audio data from file into stack buffer
-				IntBuffer channels = stack.mallocInt(1);
-				IntBuffer sampleRate = stack.mallocInt(1);
-				
-				ShortBuffer sndBuf = STBVorbis.stb_vorbis_decode_filename(path, channels, sampleRate);
-				
-				int ch = channels.get();
-				int smplRate = sampleRate.get();
-				
-				//Load audio data stack buffer into openAL buffer
-				alBufferData(buffer, ch == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, sndBuf, smplRate);
-			}
-			//create audio sources
-			source = alGenSources();
-			alSourcei(source, AL_BUFFER, buffer);
-			alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
-			
-			//set up listener
-			alListenerfv(AL_POSITION, new float[] {
-					0, 0, 0
-			});
-			alListenerfv(AL_VELOCITY, new float[] {
-					0, 0, 0
-			});
-			alListenerfv(AL_ORIENTATION, new float[] {
-					0, 0, -1f, 0, 1.0f, 0
-			});
-			
-			//alSourcePlay(source);
-		} finally {}
+	}
 		
-	}
-	
-	public void playSound() {
-		alSourcePlay(source);
-	}
 	
 	public void destroy() {
 		context = alcGetCurrentContext();

@@ -2,8 +2,6 @@ package com.PlatformerGame.game.prefabs;
 
 //import java.lang.Math;
 
-import org.joml.*;
-
 import com.PlatformerGame.engine.core.*;
 
 public class PipeBottom extends GameObject {
