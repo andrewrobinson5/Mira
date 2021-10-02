@@ -34,14 +34,11 @@ public class App {
 		frameCounter = 0;
 		timer = gcTimer = maxFPSTimer = 0;
 
-		/* TESTING AUDIO 1
 		// create game class
 		game = new Game();
 
 		// run Game.onCreate()
 		game.onCreate();
-		
-		END TESTING AUDIO 1*/
 	}
 	
 	public void loop() {
@@ -52,7 +49,6 @@ public class App {
 				glfwSetWindowShouldClose(gameWindow.window, true);
 			}
 			
-			/* TESTING AUDIO 2
 			game.onUpdate();
 			if(currentScene != null) {
 				// Iterate through all GameObject onCreates in order
@@ -78,17 +74,9 @@ public class App {
 				// some kind of loading screen?
 			}
 			
-			END AUDIO TESTING 2*/
 			
 			//Drawing
 			renderer.updateRender(gameWindow);
-			
-			// TEST AUDIO
-			boolean audioHasPlayedOnce = false;
-			if(glfwGetKey(gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS && !audioHasPlayedOnce) {
-				//Play audio
-				
-			}
 
 			// GameTimer handling
 			gameTimer.currentTime = glfwGetTime();

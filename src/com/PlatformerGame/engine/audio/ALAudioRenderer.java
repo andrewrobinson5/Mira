@@ -19,6 +19,7 @@ import static org.lwjgl.openal.ALC11.*;
 public class ALAudioRenderer {
 	private long alDevice;
 	private long context;
+	int source;
 	
 	public ALAudioRenderer() {
 		//Create device
@@ -75,7 +76,7 @@ public class ALAudioRenderer {
 				alBufferData(buffer, ch == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, sndBuf, smplRate);
 			}
 			//create audio sources
-			int source = alGenSources();
+			source = alGenSources();
 			alSourcei(source, AL_BUFFER, buffer);
 			alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
 			
@@ -90,9 +91,13 @@ public class ALAudioRenderer {
 					0, 0, -1f, 0, 1.0f, 0
 			});
 			
-			alSourcePlay(source);
+			//alSourcePlay(source);
 		} finally {}
 		
+	}
+	
+	public void playSound() {
+		alSourcePlay(source);
 	}
 	
 	public void destroy() {

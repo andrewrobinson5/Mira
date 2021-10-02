@@ -22,7 +22,7 @@ public class Game {
 	TwoPipes wall3;
 	TwoPipes wall4;
 	
-	Sound jumpSound = new Sound("/sounds/jump.ogg");
+//	Sound jumpSound = new Sound("/sounds/jump.ogg");
 	
 	public void onCreate() {
 		playerVelocityY = 0;
@@ -63,7 +63,6 @@ public class Game {
 		myScene.add(wall4);
 		
 		myScene.add(backdrop);
-		jumpSound.startSound();
 	}	
 	
 	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject
@@ -109,7 +108,7 @@ public class Game {
 			// prevents jump spam from holding down space for longer than 1 frame
 			canJump = false;
 			//play sound test
-			jumpSound.playSound();
+			App.audioRenderer.playSound();
 		}
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
 			canJump = true;
