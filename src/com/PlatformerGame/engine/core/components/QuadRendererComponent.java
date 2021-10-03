@@ -1,8 +1,10 @@
 //QuadRenderer.java
 //Copyright Andrew Robinson
 
-package com.PlatformerGame.engine.core;
+package com.PlatformerGame.engine.core.components;
 
+import com.PlatformerGame.engine.core.App;
+import com.PlatformerGame.engine.core.Texture;
 import com.PlatformerGame.engine.renderer.*;
 import org.joml.*;
 

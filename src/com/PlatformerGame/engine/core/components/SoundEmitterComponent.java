@@ -5,13 +5,15 @@
 //		for engine emitter params like MIRA_SOUND_GLOBAL, which indicates that the sound should be heard
 //		from anywhere.
 
-package com.PlatformerGame.engine.core;
+package com.PlatformerGame.engine.core.components;
 
 import com.PlatformerGame.engine.audio.Sound;
+import com.PlatformerGame.engine.core.App;
+
 import org.joml.Vector3f;
 
 import static com.PlatformerGame.engine.core.MiraUtils.*;
-import static com.PlatformerGame.engine.core.SoundEmitterComponent.MIRA_SOUND_ATTRIB.*;
+import static com.PlatformerGame.engine.core.components.SoundEmitterComponent.MIRA_SOUND_ATTRIB.*;
 import static org.lwjgl.openal.AL10.*;
 
 public class SoundEmitterComponent extends GameObjectComponent {

@@ -2,7 +2,9 @@
 //COPYRIGHT: Andrew Robinson 2021
 //DESC: Component superclass - empty component object that lays groundwork for common component functions
 
-package com.PlatformerGame.engine.core;
+package com.PlatformerGame.engine.core.components;
+
+import com.PlatformerGame.engine.core.GameObject;
 
 public class GameObjectComponent {
 	private String m_name;
@@ -20,7 +22,7 @@ public class GameObjectComponent {
 		//empty, but necessary so the method exists on all components
 	}
 	
-	protected void setGameObject(GameObject l_object) {
+	public void setGameObject(GameObject l_object) {
 		m_object = l_object;
 	}
 	

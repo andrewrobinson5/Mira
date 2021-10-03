@@ -2,6 +2,8 @@ package com.PlatformerGame.engine.core;
 
 import org.joml.*;
 
+import com.PlatformerGame.engine.core.components.GameObjectComponent;
+
 public class TransformComponent extends GameObjectComponent {
 	public float x, y, z;
 	public float globalX, globalY, globalZ;

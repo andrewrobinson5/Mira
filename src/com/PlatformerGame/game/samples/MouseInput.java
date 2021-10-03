@@ -7,6 +7,7 @@ package com.PlatformerGame.game.samples;
 
 // Import Game Engine!
 import com.PlatformerGame.engine.core.*;
+import com.PlatformerGame.engine.core.components.QuadRendererComponent;
 
 // Required for vector math
 import org.joml.*;

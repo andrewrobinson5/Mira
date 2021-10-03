@@ -3,6 +3,7 @@ package com.PlatformerGame.game.prefabs;
 //import java.lang.Math;
 
 import com.PlatformerGame.engine.core.*;
+import com.PlatformerGame.engine.core.components.QuadRendererComponent;
 
 public class PipeTop extends GameObject {
 	

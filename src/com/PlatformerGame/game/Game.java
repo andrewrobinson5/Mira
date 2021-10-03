@@ -11,10 +11,12 @@ package com.PlatformerGame.game;
 
 import com.PlatformerGame.engine.audio.Sound;
 import com.PlatformerGame.engine.core.*;
+import com.PlatformerGame.engine.core.components.QuadRendererComponent;
+import com.PlatformerGame.engine.core.components.SoundEmitterComponent;
 import com.PlatformerGame.game.prefabs.*;
 
+import static com.PlatformerGame.engine.core.components.SoundEmitterComponent.MIRA_SOUND_ATTRIB.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static com.PlatformerGame.engine.core.SoundEmitterComponent.MIRA_SOUND_ATTRIB.*;
 
 public class Game {
 	public Scene myScene = new Scene();

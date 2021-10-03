@@ -1,4 +1,4 @@
-package com.PlatformerGame.engine.core;
+package com.PlatformerGame.engine.core.components;
 
 public class RendererComponent extends GameObjectComponent {
 	

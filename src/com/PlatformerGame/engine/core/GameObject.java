@@ -2,6 +2,8 @@ package com.PlatformerGame.engine.core;
 
 import java.util.ArrayList;
 
+import com.PlatformerGame.engine.core.components.*;
+
 public class GameObject {
 	public ArrayList<GameObjectComponent> listComponents = new ArrayList<GameObjectComponent>();
 	private GameObjectComponent emptyComponent;
