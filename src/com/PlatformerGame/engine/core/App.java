@@ -37,6 +37,10 @@ public class App {
 		// create game class
 		game = new Game();
 
+		// run Game.trueInit() temporarily because of the hacky way I'm handling scene restarting
+		//	This actually only runs once, while onCreate() gets run every time the scene is reloaded.
+		game.trueInit();
+		
 		// run Game.onCreate()
 		game.onCreate();
 	}

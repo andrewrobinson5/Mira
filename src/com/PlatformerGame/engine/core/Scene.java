@@ -86,9 +86,10 @@ public class Scene {
 		App.currentScene = null;
 		for (int g = 0; g < size(); g++) {	
 			get(g).hasRunOnce = false;
-			for (int f = 0; f < get(g).listComponents.size(); f++) {
-				get(g).listComponents.get(f).hasRunOnce = false;
-			}
+//			for (int f = 0; f < get(g).listComponents.size(); f++) {
+//				get(g).listComponents.get(f).hasRunOnce = false;
+//			}
+			get(g).listComponents.clear();
 		}
 		clear();
 	}

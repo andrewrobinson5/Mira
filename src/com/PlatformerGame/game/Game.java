@@ -11,6 +11,7 @@ import com.PlatformerGame.engine.core.*;
 import com.PlatformerGame.game.prefabs.*;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static com.PlatformerGame.engine.core.SoundEmitterComponent.MIRA_SOUND_ATTRIB.*;
 
 public class Game {
 	public Scene myScene = new Scene();
@@ -24,6 +25,17 @@ public class Game {
 	TwoPipes wall4;
 	
 	Sound jumpSound = new Sound("sounds/jump.ogg");
+	Sound backgroundMusic = new Sound("sounds/song.ogg");
+//	Sound testSound = new Sound("sounds/test.ogg");
+	
+	SoundEmitterComponent BGMusicEmitterComponent = new SoundEmitterComponent(backgroundMusic, "BGMusic Emitter");
+	
+	GameObject player;
+	
+	public void trueInit() {
+		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
+		BGMusicEmitterComponent.startSound();
+	}
 	
 	public void onCreate() {
 		playerVelocityY = 0;
@@ -35,10 +47,9 @@ public class Game {
 		myScene.loadScene();
 
 		//GameObject creation and adding to scene.
-		GameObject player = new GameObject(-0.6f, 0.0f, 0.0f);
+		player = new GameObject(-0.6f, 0.0f, 0.0f);
 		player.addComponent(new QuadRendererComponent(0.2f, 0.16f));
 		player.<QuadRendererComponent>getComponent("QuadRenderer").tex = new Texture("/textures/bird.png");
-//		player.<QuadRendererComponent>getComponent("QuadRenderer").solidColor = new Vector4f(0.1f, 0.0f, 0.8f, 1f);
 		myScene.add(player);
 		
 		wall1 = new TwoPipes();
@@ -62,9 +73,16 @@ public class Game {
 		myScene.add(wall2);
 		myScene.add(wall3);
 		myScene.add(wall4);
-		
 		myScene.add(backdrop);
 		
+//		player.addComponent(BGMusicEmitterComponent);
+		player.addComponent(new SoundEmitterComponent(jumpSound, "Jump Emitter"));
+//		player.addComponent(new SoundEmitterComponent(testSound, "Test Emitter"));
+
+
+//		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
+//		BGMusicEmitterComponent.startSound();
+//		player.<SoundEmitterComponent>getComponent("BGMusic Emitter").startSound();
 	}	
 	
 	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject
@@ -80,20 +98,15 @@ public class Game {
 		} else if (!paused)
 			App.gameTimer.play();
 		
-		// this is an artifact from platforming gravity logic but it works fine enough for this demo's loss state.
-		//	if we wanna make this faster, we can actually just nix three of the conditions because we just need
-		//	to know when the player falls all the way down.
-		// but this is definitely janky and I *should* probably add a proper collision detection and a physics component.
-		//  For this demo, I do not need it.
-		if (	/*myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[0].get(1) > -1f &&
-				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[1].get(1) > -1f &&
-				myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[2].get(1) > -1f &&*/
-				(myScene.get(0).<QuadRendererComponent>getComponent("QuadRenderer").bounds[3].get(1) + myScene.get(0).transform.getCoords().get(1)) > -1f) {
+		if ((player.<QuadRendererComponent>getComponent("QuadRenderer").bounds[3].get(1) + myScene.get(0).transform.getCoords().get(1)) > -1f) {
 			playerVelocityY -= gravity*App.gameTimer.deltaTime;
 		} else {
 			//REPLACE THIS WITH LOSS STATE
 			playerVelocityY = 0;
 			paused = true;
+			
+			// TODO: ITERATE THROUGH ALL CURRENT SOUND SOURCES, THEN PAUSE ALL
+//			player.<SoundEmitterComponent>getComponent("").pauseSound();
 			
 			myScene.unloadScene();
 			// this is cheating haha
@@ -110,8 +123,10 @@ public class Game {
 			// prevents jump spam from holding down space for longer than 1 frame
 			canJump = false;
 			
-			//play sound test
-			App.audioRenderer.playSound(jumpSound);
+			//play sound
+			player.<SoundEmitterComponent>getComponent("Jump Emitter").startSound();
+//			myScene.get(0).<SoundEmitterComponent>getComponent("Test Emitter").startSound();
+			
 		}
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
 			canJump = true;
@@ -119,7 +134,7 @@ public class Game {
 		
 		// Changes position of object per frame by the velocity of that object (unit/second) * time in seconds
 		//			since last frame:  velocity*deltaTime
-		myScene.get(0).<TransformComponent>getComponent("Transform").y += (playerVelocityY*App.gameTimer.deltaTime);
+		player.<TransformComponent>getComponent("Transform").y += (playerVelocityY*App.gameTimer.deltaTime);
 		
 		wall1.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
 		wall2.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);

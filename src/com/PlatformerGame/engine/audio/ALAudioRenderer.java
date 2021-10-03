@@ -1,16 +1,23 @@
+//NAME: ALAudioRenderer.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Initializes OpenAL and opens audio device and creates a context.
+//		Also abstracts sound, source, and listener functions so the game programmer doesn't need
+//			to call on OpenAL directly.
+//NOTE: https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf - This 150 page book
+//			has everything you might need about OpenAL.
+
 package com.PlatformerGame.engine.audio;
 
 import org.lwjgl.openal.*;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
 
-import static org.lwjgl.system.MemoryUtil.NULL;
-
 import java.io.File;
 import java.net.URL;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC11.*;
 
@@ -21,8 +28,8 @@ public class ALAudioRenderer {
 	public String defaultDevice;
 	public String listALDevices;
 	
-	public static int loadSound(String filename) {
-		int source;
+	//Make this return buffer instead of source, source should be created by a function call from SoundEmitterComponent.java
+	public int loadSound(String filename) {
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			URL soundUrl = Sound.class.getResource("/res/" + filename);
 			File soundFile = new File(soundUrl.toExternalForm());
@@ -54,34 +61,32 @@ public class ALAudioRenderer {
 			if(error != AL_NO_ERROR) {
 				System.out.println("Failure to load '" + path + "' into OpenAL buffer: " + alGetError());
 			}
-			
-			//create audio sources
-			source = alGenSources();
-			error = alGetError();
-			if(error != AL_NO_ERROR) {
-				System.out.println("Failure to create OpenAL Source: " + alGetError());
-			}
-			alSourcei(source, AL_BUFFER, buffer);
-			
-			//set up listener
-			//This is fine for a default. We'll also want this to be overridable by a listenerComponent,
-			// as well as switching between listeners rapidly to deal with multiple listeners, I THINK
-			alListenerfv(AL_POSITION, new float[] {
-					0, 0, 0
-			});
-			alListenerfv(AL_VELOCITY, new float[] {
-					0, 0, 0
-			});
-			alListenerfv(AL_ORIENTATION, new float[] {
-					0, 0, -1f, 0, 1.0f, 0
-			});
-			
-			return source;
+		
+			return buffer;
 		}
 	}
 	
-	public void playSound(Sound sound) {
-		alSourcePlay(sound.getSource());
+	public int createALSource() {
+		//create audio sources
+		int source = alGenSources();
+		int error = alGetError();
+		if(error != AL_NO_ERROR) {
+			System.out.println("Failure to create OpenAL Source: " + alGetError());
+		}
+		
+		return source;
+	}
+	
+	public void deleteALSource(int source) {
+		alDeleteSources(source);
+	}
+	
+	public void playSound(int source) {
+		alSourcePlay(source);
+	}
+	
+	public void deleteALBuffer(int buffer) {
+		alDeleteBuffers(buffer);
 	}
 	
 	public ALAudioRenderer() {
@@ -102,6 +107,7 @@ public class ALAudioRenderer {
 			if(context != NULL) {
 				alcMakeContextCurrent(context);
 				AL.createCapabilities(deviceCapabilities);
+				
 			} else {
 				//implement better logging
 				System.out.println("Unable to create OpenAL context 'context'. Audio may not work!");
@@ -110,6 +116,18 @@ public class ALAudioRenderer {
 			System.out.println("Unable to open OpenAL device. Audio may not work!");
 		}
 		
+		//set up listener
+		//This is fine for a default. We'll also want this to be overridable by a listenerComponent,
+		// as well as switching between listeners rapidly to deal with multiple listeners, I THINK
+		alListenerfv(AL_POSITION, new float[] {
+				0, 0, 0
+		});
+		alListenerfv(AL_VELOCITY, new float[] {
+				0, 0, 0
+		});
+		alListenerfv(AL_ORIENTATION, new float[] {
+				0, 0, -1f, 0, 1.0f, 0
+		});
 	}
 		
 	
