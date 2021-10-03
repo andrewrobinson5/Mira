@@ -1,3 +1,15 @@
+//NAME: OGLRenderer.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Mira's OpenGL abstraction layer.
+//			Provides a RenderQueue, which holds everything in a frame that will be drawn.
+//			Provides functions to add meshes to the RenderQueue.
+//			Provides shader loading functionality.
+//			Sets up OpenGL defaults.
+//			Abstracts any OpenGL function the engine needs to keep rendering code internal.
+//				(this helps expand later; if I added a software or vulkan renderer, I could
+//				call on VKRenderer and not OGLRenderer and it would have the same feature set.)
+
+
 package com.PlatformerGame.engine.renderer;
 
 import static org.lwjgl.glfw.GLFW.*;

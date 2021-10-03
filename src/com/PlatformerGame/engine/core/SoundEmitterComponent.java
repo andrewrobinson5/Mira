@@ -1,3 +1,10 @@
+//NAME: SoundEmitterComponent.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Interfaces with ALAudioRenderer to create a new OpenAL source, puts a sound object's data
+//		into that source, and exposes the play and pause functions. Finally, it lays the groundwork
+//		for engine emitter params like MIRA_SOUND_GLOBAL, which indicates that the sound should be heard
+//		from anywhere.
+
 package com.PlatformerGame.engine.core;
 
 import com.PlatformerGame.engine.audio.Sound;

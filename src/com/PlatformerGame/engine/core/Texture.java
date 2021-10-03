@@ -1,3 +1,8 @@
+//NAME: Texture.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Loads textures from file, stores them in buffers, and keeps track of the buffers to avoid
+//		loading a texture multiple times at once.
+
 package com.PlatformerGame.engine.core;
 
 import java.io.File;

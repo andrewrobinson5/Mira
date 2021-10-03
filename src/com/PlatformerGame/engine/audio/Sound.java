@@ -1,3 +1,8 @@
+//NAME: Texture.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Stores loaded .OGG file in a buffer, and keeps track of the buffers to avoid
+//		loading an audio file multiple times at once.
+
 package com.PlatformerGame.engine.audio;
 
 import java.util.HashMap;
@@ -13,17 +18,6 @@ public class Sound {
 	protected static HashMap<String, Integer> soundMap = new HashMap<String, Integer>();
 	
 	public int buffer;
-	
-	public static void dumpHashMap() {
-		for (String name: soundMap.keySet()) {
-		    String key = name.toString();
-		    String value = soundMap.get(name).toString();
-		    System.out.println(key + " " + value);
-		}
-	}
-	
-	
-	
 	
 	public int getSound(String soundLoc) {
 		if(soundMap.containsKey(soundLoc)) {

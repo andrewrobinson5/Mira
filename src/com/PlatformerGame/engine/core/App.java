@@ -1,3 +1,8 @@
+//NAME: App.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Mira Entry point and execution manager. This is the class that actually sets up the engine
+//		and runs the game inside it's execution.
+
 package com.PlatformerGame.engine.core;
 
 import static org.lwjgl.glfw.GLFW.*;

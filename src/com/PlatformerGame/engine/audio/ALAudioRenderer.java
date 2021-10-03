@@ -4,7 +4,7 @@
 //		Also abstracts sound, source, and listener functions so the game programmer doesn't need
 //			to call on OpenAL directly.
 //NOTE: https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf - This 150 page book
-//			has everything you might need about OpenAL.
+//			has everything you might need about OpenAL. Very helpful.
 
 package com.PlatformerGame.engine.audio;
 

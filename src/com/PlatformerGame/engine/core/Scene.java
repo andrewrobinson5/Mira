@@ -1,3 +1,7 @@
+//NAME: Scene.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Scene class is just a cheap bag of GameObjects with hierarchy parsing functions.
+
 package com.PlatformerGame.engine.core;
 
 import java.util.ArrayList;
@@ -86,9 +90,9 @@ public class Scene {
 		App.currentScene = null;
 		for (int g = 0; g < size(); g++) {	
 			get(g).hasRunOnce = false;
-//			for (int f = 0; f < get(g).listComponents.size(); f++) {
-//				get(g).listComponents.get(f).hasRunOnce = false;
-//			}
+			for (int f = 0; f < get(g).listComponents.size(); f++) {
+				get(g).listComponents.get(f).hasRunOnce = false;
+			}
 			get(g).listComponents.clear();
 		}
 		clear();

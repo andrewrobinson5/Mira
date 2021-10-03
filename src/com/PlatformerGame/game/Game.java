@@ -1,8 +1,11 @@
-//GAME.JAVA
-//DESCRIPTION: This is the "game" class. All of the logic of the game belongs here: the initialization and game loop.
-//NOTE: This is not how the game class will look in the future, it is currently very messy and many things are handled
-//		here directly that should probably be abstracted. I have not implemented several engine features like scene
-//		loading or input handling or a better way to handle onUpdate() and onCreate(), etc... 
+//NAME: Game.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: This is the game code. It consists of two functions that get called by Mira:
+//			onCreate() - runs when the game is started
+//			onUpdate() - runs once per frame
+//		There is no real entry point inside this Game class, only in the App class, which instantiates
+//		this class and calls those two functions. This way, the only thing the programmer of this
+//		class has to worry about is game logic and not setting up the engine.
 
 package com.PlatformerGame.game;
 
@@ -26,13 +29,15 @@ public class Game {
 	
 	Sound jumpSound = new Sound("sounds/jump.ogg");
 	Sound backgroundMusic = new Sound("sounds/song.ogg");
-//	Sound testSound = new Sound("sounds/test.ogg");
-	
+
 	SoundEmitterComponent BGMusicEmitterComponent = new SoundEmitterComponent(backgroundMusic, "BGMusic Emitter");
 	
 	GameObject player;
 	
 	public void trueInit() {
+		// Sound emitters don't technically need to be attached to a GameObject to work because they
+		//	 are all immediate-mode functions and get called directly from game code and not from App.java
+		//	 When I develop an editor, they'll only show up if bound to one.
 		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
 		BGMusicEmitterComponent.startSound();
 	}
@@ -44,8 +49,6 @@ public class Game {
 		paused = true;
 		gravity = 6.8f;
 		
-		myScene.loadScene();
-
 		//GameObject creation and adding to scene.
 		player = new GameObject(-0.6f, 0.0f, 0.0f);
 		player.addComponent(new QuadRendererComponent(0.2f, 0.16f));
@@ -53,15 +56,13 @@ public class Game {
 		myScene.add(player);
 		
 		wall1 = new TwoPipes();
-		wall1.<TransformComponent>getComponent("Transform").x = 0f;
-		
 		wall2= new TwoPipes();
-		wall2.<TransformComponent>getComponent("Transform").x = 0.85f;
-		
 		wall3 = new TwoPipes();
-		wall3.<TransformComponent>getComponent("Transform").x = 1.7f;
-		
 		wall4 = new TwoPipes();
+		
+		wall1.<TransformComponent>getComponent("Transform").x = 0f;
+		wall2.<TransformComponent>getComponent("Transform").x = 0.85f;
+		wall3.<TransformComponent>getComponent("Transform").x = 1.7f;
 		wall4.<TransformComponent>getComponent("Transform").x = 2.55f;
 		
 		GameObject backdrop = new GameObject(0, 0, 0.8f);
@@ -75,14 +76,10 @@ public class Game {
 		myScene.add(wall4);
 		myScene.add(backdrop);
 		
-//		player.addComponent(BGMusicEmitterComponent);
 		player.addComponent(new SoundEmitterComponent(jumpSound, "Jump Emitter"));
-//		player.addComponent(new SoundEmitterComponent(testSound, "Test Emitter"));
-
-
-//		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
-//		BGMusicEmitterComponent.startSound();
-//		player.<SoundEmitterComponent>getComponent("BGMusic Emitter").startSound();
+		
+		// After everything is in the scene that should be, load it.
+		myScene.loadScene();
 	}	
 	
 	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject
@@ -105,9 +102,6 @@ public class Game {
 			playerVelocityY = 0;
 			paused = true;
 			
-			// TODO: ITERATE THROUGH ALL CURRENT SOUND SOURCES, THEN PAUSE ALL
-//			player.<SoundEmitterComponent>getComponent("").pauseSound();
-			
 			myScene.unloadScene();
 			// this is cheating haha
 			// absolutely awful. Good enough for a school project for now
@@ -125,7 +119,6 @@ public class Game {
 			
 			//play sound
 			player.<SoundEmitterComponent>getComponent("Jump Emitter").startSound();
-//			myScene.get(0).<SoundEmitterComponent>getComponent("Test Emitter").startSound();
 			
 		}
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_RELEASE) {

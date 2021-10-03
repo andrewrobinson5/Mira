@@ -1,3 +1,7 @@
+//NAME: Window.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Create OpenGL capable window using GLFW and create GL Capabilities with it.
+
 package com.PlatformerGame.engine.renderer;
 
 import org.lwjgl.glfw.*;
@@ -25,8 +29,8 @@ public class Window {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_SAMPLES, 2);
 		
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		
 		if (!isFullScreen) {

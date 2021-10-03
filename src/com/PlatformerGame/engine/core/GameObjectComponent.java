@@ -1,3 +1,7 @@
+//NAME: GameObjectComponent.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: Component superclass - empty component object that lays groundwork for common component functions
+
 package com.PlatformerGame.engine.core;
 
 public class GameObjectComponent {
