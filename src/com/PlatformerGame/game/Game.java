@@ -39,7 +39,7 @@ public class Game {
 	public void trueInit() {
 		// Sound emitters don't technically need to be attached to a GameObject to work because they
 		//	 are all immediate-mode functions and get called directly from game code and not from App.java
-		//	 When I develop an editor, they'll only show up if bound to one.
+		// HOWEVER: a non-global sound emitter without a Game Object will not have a transform, and will throw an exception.
 		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
 		BGMusicEmitterComponent.startSound();
 	}
