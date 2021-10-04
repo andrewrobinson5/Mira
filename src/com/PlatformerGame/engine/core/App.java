@@ -41,10 +41,6 @@ public class App {
 
 		// create game class
 		game = new Game();
-
-		// run Game.trueInit() temporarily because of the hacky way I'm handling scene restarting
-		//	This actually only runs once, while onCreate() gets run every time the scene is reloaded.
-		game.trueInit();
 		
 		// run Game.onCreate()
 		game.onCreate();
@@ -58,7 +54,6 @@ public class App {
 				glfwSetWindowShouldClose(gameWindow.window, true);
 			}
 			
-			game.onUpdate();
 			if(currentScene != null) {
 				// Iterate through all GameObject onCreates in order
 				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
@@ -69,7 +64,7 @@ public class App {
 					}
 				}
 				currentScene.alreadyIteratedObjects.clear();
-				
+
 				// Iterate through all GameObject onUpdates in order
 				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
 					for (int g = 0; g < currentScene.size(); g++) {	
@@ -83,6 +78,7 @@ public class App {
 				// some kind of loading screen?
 			}
 			
+			game.onUpdate();
 			
 			//Drawing
 			renderer.updateRender(gameWindow);
@@ -116,13 +112,13 @@ public class App {
 //			maxFPSTimer = 0;
 			frameCounter++;
 			
-			// Asks politely for garbage to be collected every minute.
-//			if (gcTimer >= 60) {
-//				System.gc();
-//				gcTimer = 0;
-//			} else {
-//				gcTimer += gameTimer.unaffectedDeltaTime;
-//			}
+			// Asks politely for garbage to be collected every minute. Doesn't happen quite as often as I'd prefer.
+			if (gcTimer >= 60) {
+				System.gc();
+				gcTimer = 0;
+			} else {
+				gcTimer += gameTimer.unaffectedDeltaTime;
+			}
 		}
 		
 	}

@@ -33,16 +33,9 @@ public class Game {
 	Sound backgroundMusic = new Sound("sounds/song.ogg");
 
 	SoundEmitterComponent BGMusicEmitterComponent = new SoundEmitterComponent(backgroundMusic, "BGMusic Emitter");
+	SoundEmitterComponent jumpEmitterComponent = new SoundEmitterComponent(jumpSound, "Jump Emitter");
 	
 	GameObject player;
-	
-	public void trueInit() {
-		// Sound emitters don't technically need to be attached to a GameObject to work because they
-		//	 are all immediate-mode functions and get called directly from game code and not from App.java
-		// HOWEVER: a non-global sound emitter without a Game Object will not have a transform, and will throw an exception.
-		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
-		BGMusicEmitterComponent.startSound();
-	}
 	
 	public void onCreate() {
 		playerVelocityY = 0;
@@ -78,14 +71,25 @@ public class Game {
 		myScene.add(wall4);
 		myScene.add(backdrop);
 		
-		player.addComponent(new SoundEmitterComponent(jumpSound, "Jump Emitter"));
+		
+		player.addComponent(jumpEmitterComponent);
+		player.addComponent(BGMusicEmitterComponent);
+		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
 		
 		// After everything is in the scene that should be, load it.
 		myScene.loadScene();
 	}	
 	
 	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject
+	// TODO: PUT BACKGROUND MUSIC IN ITS OWN GAMEOBJECT OR MAKE A GAME DIRECTOR OBJECT TO AVOID HACKS LIKE THIS:
+	private boolean updateHasRunOnce = false; // this is abuse
 	public void onUpdate() {
+		if(!updateHasRunOnce) {
+			//This is running before the gameobjects are all run onCreate()
+			BGMusicEmitterComponent.startSound();
+			updateHasRunOnce = true;
+		}
+		
 		// starts paused, is unpaused logic.
 		if (paused) {
 			App.gameTimer.pause();
@@ -105,9 +109,14 @@ public class Game {
 			paused = true;
 			
 			myScene.unloadScene();
+			for (int i = 0; i < SoundEmitterComponent.sourcesList.size(); i++) {
+				App.audioRenderer.deleteALSource(SoundEmitterComponent.sourcesList.get(i));
+			}
+			
 			// this is cheating haha
 			// absolutely awful. Good enough for a school project for now
 			// Really this next line restarts the entire game, except for persistent data. I won't want that in the future. I'll want to restart the scene. This can be done by using a game director object I guess.
+			updateHasRunOnce = false;
 			onCreate();
 		}
 		

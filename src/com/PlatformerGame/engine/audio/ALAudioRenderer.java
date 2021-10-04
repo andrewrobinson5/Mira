@@ -8,6 +8,7 @@
 
 package com.PlatformerGame.engine.audio;
 
+import org.joml.Vector3f;
 import org.lwjgl.openal.*;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
@@ -59,19 +60,43 @@ public class ALAudioRenderer {
 			alBufferData(buffer, ch == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, sndBuf, smplRate);
 			error = alGetError();
 			if(error != AL_NO_ERROR) {
-				System.out.println("Failure to load '" + path + "' into OpenAL buffer: " + alGetError());
+				System.out.println("Failure to load '" + path + "' into OpenAL buffer: " + error);
 			}
 		
 			return buffer;
 		}
 	}
 	
+	//I don't like this thin wrapper, but I need the abstraction in case I add a different audio backend.
+	public void putSoundInSource(Sound sound, int source) {
+		alSourcei(source, AL_BUFFER, sound.getBufferId());
+	}
+	
+	public void setSourcePosition(int source, Vector3f position) {
+		alSource3f(source, AL_POSITION, position.get(0), position.get(1), position.get(2));
+	}
+	
+	public void setSourceGlobal(int source, boolean b) {
+		alSourcei(source, AL_SOURCE_RELATIVE, b ? AL_TRUE : AL_FALSE);
+		if(b)
+			alSource3f(source, AL_POSITION, 0f, 0f, 0f);
+	}
+	
+	public void setSourceLooping(int source, boolean b) {
+		alSourcei(source, AL_LOOPING, b ? AL_TRUE : AL_FALSE);
+	}
+	
+	public void setSourceRelative(int source, boolean b) {
+		alSourcei(source, AL_SOURCE_RELATIVE, b ? AL_TRUE : AL_FALSE);
+	}
+	
 	public int createALSource() {
 		//create audio sources
+		alGetError();
 		int source = alGenSources();
 		int error = alGetError();
 		if(error != AL_NO_ERROR) {
-			System.out.println("Failure to create OpenAL Source: " + alGetError());
+			System.out.println("Failure to create OpenAL Source: " + error);
 		}
 		
 		return source;
@@ -83,6 +108,10 @@ public class ALAudioRenderer {
 	
 	public void playSound(int source) {
 		alSourcePlay(source);
+	}
+	
+	public void pauseSound(int source) {
+		alSourcePause(source);
 	}
 	
 	public void deleteALBuffer(int buffer) {
@@ -117,7 +146,7 @@ public class ALAudioRenderer {
 		}
 		
 		//set up listener
-		//This is fine for a default. We'll also want this to be overridable by a listenerComponent,
+		//This is fine for a default. We'll also want this to be overridden by a listenerComponent,
 		// as well as switching between listeners rapidly to deal with multiple listeners, I THINK
 		alListenerfv(AL_POSITION, new float[] {
 				0, 0, 0
