@@ -1,23 +1,23 @@
 package com.PlatformerGame.engine.core;
 
 public class GameTime {
-	private float timeScale = 1.0f;
+	private static float timeScale = 1.0f;
 	// deltaTime has timeScale applied, unaffectedDeltaTime does not.
-	public double currentTime, oldTime, deltaTime, unaffectedDeltaTime;
+	public static double currentTime, oldTime, deltaTime, unaffectedDeltaTime;
 	
-	public void setTimeScale(float l_scale) {
+	public static void setTimeScale(float l_scale) {
 		timeScale = l_scale;
 	}
 	
-	public float getTimeScale() {
+	public static float getTimeScale() {
 		return timeScale;
 	}
 	
-	public void pause() {
+	public static void pause() {
 		timeScale = 0;
 	}
 	
-	public void play() {
+	public static void play() {
 		timeScale = 1.0f;
 	}
 }

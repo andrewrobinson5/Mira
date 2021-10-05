@@ -92,17 +92,17 @@ public class Game {
 		
 		// starts paused, is unpaused logic.
 		if (paused) {
-			App.gameTimer.pause();
+			GameTime.pause();
 			
 			//TODO: Input handling abstraction
 			if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 				paused = !paused;
 			}
 		} else if (!paused)
-			App.gameTimer.play();
+			GameTime.play();
 		
 		if ((player.<QuadRendererComponent>getComponent("QuadRenderer").bounds[3].get(1) + myScene.get(0).transform.getCoords().get(1)) > -1f) {
-			playerVelocityY -= gravity*App.gameTimer.deltaTime;
+			playerVelocityY -= gravity*GameTime.deltaTime;
 		} else {
 			//REPLACE THIS WITH LOSS STATE
 			playerVelocityY = 0;
@@ -138,12 +138,12 @@ public class Game {
 		
 		// Changes position of object per frame by the velocity of that object (unit/second) * time in seconds
 		//			since last frame:  velocity*deltaTime
-		player.<TransformComponent>getComponent("Transform").y += (playerVelocityY*App.gameTimer.deltaTime);
+		player.<TransformComponent>getComponent("Transform").y += (playerVelocityY*GameTime.deltaTime);
 		
-		wall1.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
-		wall2.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
-		wall3.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
-		wall4.<TransformComponent>getComponent("Transform").x += (pipesVelocity*App.gameTimer.deltaTime);
+		wall1.<TransformComponent>getComponent("Transform").x += (pipesVelocity*GameTime.deltaTime);
+		wall2.<TransformComponent>getComponent("Transform").x += (pipesVelocity*GameTime.deltaTime);
+		wall3.<TransformComponent>getComponent("Transform").x += (pipesVelocity*GameTime.deltaTime);
+		wall4.<TransformComponent>getComponent("Transform").x += (pipesVelocity*GameTime.deltaTime);
 		
 		// Really the whole myScene.get(x) is a legacy format that I'm using now because it works, but as the
 		//	project progresses it'll probably be more and more valuable to keep track of game objects and game logic

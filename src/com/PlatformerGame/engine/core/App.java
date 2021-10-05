@@ -15,7 +15,6 @@ public class App {
 	public static Window gameWindow;
 	public static OGLRenderer renderer;
 	public static ALAudioRenderer audioRenderer;
-	public static GameTime gameTimer;
 	public static Scene currentScene;
 	private Game game;
 	
@@ -35,7 +34,6 @@ public class App {
 		audioRenderer = new ALAudioRenderer();
 		
 		// init game timer
-		gameTimer = new GameTime();
 		frameCounter = 0;
 		timer = gcTimer = maxFPSTimer = 0;
 
@@ -84,19 +82,19 @@ public class App {
 			renderer.updateRender(gameWindow);
 
 			// GameTimer handling
-			gameTimer.currentTime = glfwGetTime();
-			gameTimer.unaffectedDeltaTime = (gameTimer.currentTime-gameTimer.oldTime);
+			GameTime.currentTime = glfwGetTime();
+			GameTime.unaffectedDeltaTime = (GameTime.currentTime-GameTime.oldTime);
 //			System.out.println(gameTimer.unaffectedDeltaTime);
-			gameTimer.deltaTime = gameTimer.unaffectedDeltaTime*gameTimer.getTimeScale();
+			GameTime.deltaTime = GameTime.unaffectedDeltaTime*GameTime.getTimeScale();
 			if (timer >= 1) {
 				System.out.println(frameCounter);
 				frameCounter = 0;
 				timer = 0;
 			} else {
-				timer += gameTimer.unaffectedDeltaTime;
+				timer += GameTime.unaffectedDeltaTime;
 			}
 			
-			gameTimer.oldTime = gameTimer.currentTime;
+			GameTime.oldTime = GameTime.currentTime;
 			
 			// Sleep to avoid resource hogging
 //			while (maxFPSTimer < 0.008333) {
@@ -117,7 +115,7 @@ public class App {
 				System.gc();
 				gcTimer = 0;
 			} else {
-				gcTimer += gameTimer.unaffectedDeltaTime;
+				gcTimer += GameTime.unaffectedDeltaTime;
 			}
 		}
 		

@@ -1,3 +1,7 @@
+//NAME: GameObject.java
+//COPYRIGHT: Andrew Robinson 2021
+//DESC: A bag of components that keeps track of its own parents and children.
+
 package com.PlatformerGame.engine.core;
 
 import java.util.ArrayList;
@@ -75,7 +79,7 @@ public class GameObject {
 	}
 	
 	// Component Pattern implementation
-	public <T extends GameObjectComponent> int addComponent(T component) {
+	public <T extends GameObjectComponent> T addComponent(T component) {
 		boolean nameExists = false;
 		for (GameObjectComponent comp : listComponents) {
 			if (component.getName() == comp.getName()) {			
@@ -90,20 +94,7 @@ public class GameObject {
 			
 			listComponents.add(component);
 			
-			return listComponents.size()-1;
-		}
-	}
-	
-	public int removeComponent(int comp) {
-		if (comp <= 0 || comp >= listComponents.size()) {
-			System.out.println("Attempted access of invalid component. Nothing removed.");
-			return comp;
-		} else if (listComponents.get(comp).getName() == "Transform") {
-			System.out.println("Cannot remove component 'Transform'.");
-			return comp;
-		} else {
-			listComponents.remove(comp);
-			return -1;
+			return component;
 		}
 	}
 		
