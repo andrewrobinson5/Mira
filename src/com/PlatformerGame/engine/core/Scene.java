@@ -35,7 +35,8 @@ public class Scene {
 	}
 	
 	public <T extends GameObject> void delete(T item) {
-		listObjects.remove(item);
+		if(listObjects.contains(item))
+			listObjects.remove(item);
 	}
 	
 	public int getHierarchyDepth() {

@@ -16,7 +16,7 @@ public class GameObject {
 	
 	//Children-parent tracking stuff
 	public ArrayList<GameObject> children = new ArrayList<GameObject>();
-	protected GameObject parent = null;
+	public GameObject parent = null;
 	public int hierLevel;
 	
 	private void incrementLvlAfterParenting() {

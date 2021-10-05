@@ -13,6 +13,8 @@ import org.lwjgl.openal.*;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
 
+import com.PlatformerGame.engine.core.Sound;
+
 import java.io.File;
 import java.net.URL;
 import java.nio.IntBuffer;
@@ -90,7 +92,7 @@ public class ALAudioRenderer {
 		alSourcei(source, AL_SOURCE_RELATIVE, b ? AL_TRUE : AL_FALSE);
 	}
 	
-	public int createALSource() {
+	public int createSource() {
 		//create audio sources
 		alGetError();
 		int source = alGenSources();

@@ -7,8 +7,8 @@
 
 package com.PlatformerGame.engine.core.components;
 
-import com.PlatformerGame.engine.audio.Sound;
 import com.PlatformerGame.engine.core.App;
+import com.PlatformerGame.engine.core.Sound;
 
 import java.util.ArrayList;
 import org.joml.Vector3f;
@@ -48,7 +48,7 @@ public class SoundEmitterComponent extends GameObjectComponent {
 	
 	public void onCreate() {
 		super.onCreate();
-		mySource = App.audioRenderer.createALSource();
+		mySource = App.audioRenderer.createSource();
 		sourcesList.add(mySource);
 		App.audioRenderer.putSoundInSource(soundInput, mySource);
 		sendAttribsToAudioRenderer();
