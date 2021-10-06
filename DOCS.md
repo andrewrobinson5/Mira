@@ -163,4 +163,11 @@ Methods:
 ## Mira Engine Internals
 The game programmer will not need to use these. Components work with these, and the game programmer will work with components.
 
+### Renderer > Window.java
+Description: Creates a window and OpenGL context.
 
+### Renderer > OGLRenderer.java
+Description: Sets up OGL defaults and abstracts mesh rendering away from raw OpenGL.
+
+### Audio > ALAudioRenderer.java
+Description: Sets up OpenAL defaults and abstracts sound loading/playing functionality from raw OpenAL.
