@@ -26,9 +26,9 @@ public class Sound {
 	
 	public Sound(String soundLoc) {
 		if(getSound(soundLoc) == 0) {
-			buffer = App.audioRenderer.loadSound(soundLoc);
-			soundMap.put(soundLoc, buffer);
-		}
+			soundMap.put(soundLoc, App.audioRenderer.loadSound(soundLoc));
+		} 
+		buffer = getSound(soundLoc);
 		
 		if(buffer == 0) {
 			throw new RuntimeException("Failed to load sound");

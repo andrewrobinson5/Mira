@@ -43,6 +43,7 @@ public class GameObject {
 		}
 	}
 	
+	//THESE NEXT TWO FUNCTIONS SHOULD BE MAKING SURE THE OBJECT IS IN A SCENE HIERARCHY BEFORE ADDING THEM AS CHILDREN
 	public void makeChildOf(GameObject l_parent) {
 		parent = l_parent;
 		l_parent.children.add(this);
