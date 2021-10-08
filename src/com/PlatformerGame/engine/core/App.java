@@ -21,7 +21,9 @@ public class App {
 	private int width, height;
 	
 	private int frameCounter;
-	private double timer, gcTimer, maxFPSTimer;
+	private double timer, gcTimer;
+	private double maxFPSTimer;
+	
 	
 	public App() {
 		// init window - width and height should be in an ini file
@@ -35,13 +37,15 @@ public class App {
 		
 		// init game timer
 		frameCounter = 0;
-		timer = gcTimer = maxFPSTimer = 0;
+		timer = gcTimer = 0;
+		maxFPSTimer = 0;
 
 		// create game class
 		game = new Game();
 		
 		// run Game.onCreate()
 		game.onCreate();
+		
 	}
 	
 	public void loop() {
@@ -75,7 +79,7 @@ public class App {
 			} else {
 				// some kind of loading screen?
 			}
-			
+
 			game.onUpdate();
 			
 			//Drawing
@@ -84,7 +88,6 @@ public class App {
 			// GameTimer handling
 			GameTime.currentTime = glfwGetTime();
 			GameTime.unaffectedDeltaTime = (GameTime.currentTime-GameTime.oldTime);
-//			System.out.println(gameTimer.unaffectedDeltaTime);
 			GameTime.deltaTime = GameTime.unaffectedDeltaTime*GameTime.getTimeScale();
 			if (timer >= 1) {
 				System.out.println(frameCounter);
@@ -97,17 +100,17 @@ public class App {
 			GameTime.oldTime = GameTime.currentTime;
 			
 			// Sleep to avoid resource hogging
-//			while (maxFPSTimer < 0.008333) {
-//				Thread.yield();
-//				
-//				//sleep for 1ms
-//				try {
-//					Thread.sleep(1);
-//				} catch(Exception e) {} 
-//				
-//				maxFPSTimer += gameTimer.unaffectedDeltaTime;
-//			}
-//			maxFPSTimer = 0;
+			while (maxFPSTimer < 0.008333) {
+				Thread.yield();
+				
+				//sleep for 1ms
+				try {
+					Thread.sleep(3);
+				} catch(Exception e) {} 
+				
+				maxFPSTimer += GameTime.unaffectedDeltaTime;
+			}
+			maxFPSTimer = 0;
 			frameCounter++;
 			
 			// Asks politely for garbage to be collected every minute. Doesn't happen quite as often as I'd prefer.

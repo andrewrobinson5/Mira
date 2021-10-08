@@ -9,81 +9,61 @@
 
 package com.PlatformerGame.game;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.glfwGetKey;
+
 import com.PlatformerGame.engine.core.*;
-import com.PlatformerGame.engine.core.components.QuadRendererComponent;
-import com.PlatformerGame.engine.core.components.SoundEmitterComponent;
-import com.PlatformerGame.engine.core.components.TransformComponent;
+import com.PlatformerGame.engine.core.components.*;
 import com.PlatformerGame.game.prefabs.*;
 
-import static com.PlatformerGame.engine.core.components.SoundEmitterComponent.MIRA_SOUND_ATTRIB.*;
-import static org.lwjgl.glfw.GLFW.*;
-
 public class Game {
-	public Scene myScene = new Scene();
-	
+	//class member variables
 	private boolean paused;
-	private float gravity;
+	
+	public Scene myScene = new Scene();
 	
 	TwoPipes wall1;
 	TwoPipes wall2;
 	TwoPipes wall3;
 	TwoPipes wall4;
 	
-	Sound backgroundMusic = new Sound("sounds/song.ogg"); // game director class
-
-	SoundEmitterComponent BGMusicEmitterComponent = new SoundEmitterComponent(backgroundMusic, "BGMusic Emitter");
-	
-	PlayerController player;
+	PlayerController player = new PlayerController();
 	
 	public void onCreate() {
-		paused = true; // game director class
+		paused = true;
 		
 		//GameObject creation and adding to scene.
-		player = new PlayerController();
+		player.name = "player";
 		myScene.add(player);
 		
-		
 		wall1 = new TwoPipes();
+		wall1.name = "wall1";
 		wall1.<TransformComponent>getComponent("Transform").x = 0f;
+		myScene.add(wall1);
 
 		wall2= new TwoPipes();
+		wall2.name = "wall2";
 		wall2.<TransformComponent>getComponent("Transform").x = 0.85f;
+		myScene.add(wall2);
 
 		wall3 = new TwoPipes();
+		wall3.name = "wall3";
 		wall3.<TransformComponent>getComponent("Transform").x = 1.7f;
+		myScene.add(wall3);
 
 		wall4 = new TwoPipes();
+		wall4.name = "wall4";
 		wall4.<TransformComponent>getComponent("Transform").x = 2.55f;
-		
-		myScene.add(wall1);
-		myScene.add(wall2);
-		myScene.add(wall3);
 		myScene.add(wall4);
 		
 		BackgroundPlate backdrop = new BackgroundPlate();
 		myScene.add(backdrop);
 		
-		
-		player.addComponent(BGMusicEmitterComponent); // game director class
-		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1); // gameDirector class
-		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_GLOBAL, 1); // gameDirector class
-
-		
-		// After everything is in the scene that should be, load it.
-		myScene.loadScene();
+		myScene.loadScene(); // After everything is in the scene that should be, load it.
 	}	
 	
-	// This is poorly arranged and convoluted but that's okay. Game logic would be better off in a director GameObject
-	// TODO: PUT BACKGROUND MUSIC IN ITS OWN GAMEOBJECT OR MAKE A GAME DIRECTOR OBJECT TO AVOID HACKS LIKE THIS:
-	private boolean updateHasRunOnce = false; // this is abuse
 	public void onUpdate() {
-		if(!updateHasRunOnce) {
-			//This is running before the gameobjects are all run onCreate()
-			BGMusicEmitterComponent.startSound();
-			updateHasRunOnce = true;
-		}
-		
-		// starts paused, is unpaused logic. -- This all goes in game director
 		if (paused) {
 			GameTime.pause();
 			
@@ -94,22 +74,16 @@ public class Game {
 		} else if (!paused)
 			GameTime.play();
 		
-		if ((player.<QuadRendererComponent>getComponent("QuadRenderer").bounds[3].get(1) + myScene.get(0).transform.getCoords().get(1)) > -1f) {
-
-		} else {
+		if (player.isRestarting) {
 			//REPLACE THIS WITH LOSS STATE
 			paused = true;
-			
 			myScene.unloadScene();
-			for (int i = 0; i < SoundEmitterComponent.sourcesList.size(); i++) {
-				App.audioRenderer.deleteALSource(SoundEmitterComponent.sourcesList.get(i));
-			}
-			
-			// this is cheating haha
-			// absolutely awful. Good enough for a school project for now
-			// Really this next line restarts the entire game, except for persistent data. I won't want that in the future. I'll want to restart the scene. This can be done by using a game director object I guess.
-			updateHasRunOnce = false;
-			onCreate();
+			wall1.<TransformComponent>getComponent("Transform").x = 0f;
+			wall2.<TransformComponent>getComponent("Transform").x = 0.85f;
+			wall3.<TransformComponent>getComponent("Transform").x = 1.7f;
+			wall4.<TransformComponent>getComponent("Transform").x = 2.55f;
+			myScene.loadScene();
+			player.isRestarting = false;
 		}
 	}
 }

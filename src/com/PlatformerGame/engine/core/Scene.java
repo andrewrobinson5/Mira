@@ -19,6 +19,17 @@ public class Scene {
 		return listObjects.get(i);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T extends GameObject> T get(String go) {
+		for(int i = 0; i < listObjects.size(); i++) {
+			if(listObjects.get(i).name == go) {
+				return (T)listObjects.get(i);
+			}
+		}
+		//do not use this function if you don't know the name.
+		throw new RuntimeException("Illegal behavior: Attempted to get non-existant GameObject '" + go + "'.");
+	}
+	
 	public int size() {
 		return listObjects.size();
 	}
@@ -53,10 +64,15 @@ public class Scene {
 	public void hierarchyHelperFunctionCreate(GameObject g) {
 		g.onCreate();
 		g.hasRunOnce = true;
+		System.out.println("test1");
 		if(!alreadyIteratedObjects.contains(g)) { 
 			alreadyIteratedObjects.add(g);
+			System.out.println("test2");
 			for(int e = 0; e < g.children.size(); e++) {
+				System.out.println("test3");
 				if(listObjects.get(e).parent == g) {
+					// this is never run
+					System.out.println("test4");
 					hierarchyHelperFunctionCreate(g.children.get(e));
 				}
 			}
@@ -92,11 +108,12 @@ public class Scene {
 		App.currentScene = null;
 		for (int g = 0; g < size(); g++) {	
 			get(g).hasRunOnce = false;
+//			System.out.println("test");
 			for (int f = 0; f < get(g).listComponents.size(); f++) {
 				get(g).listComponents.get(f).hasRunOnce = false;
 			}
-			get(g).listComponents.clear();
+//			get(g).listComponents.clear();
 		}
-		clear();
+//		clear();
 	}
 }

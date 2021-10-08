@@ -10,27 +10,28 @@ import com.PlatformerGame.engine.core.*;
 import com.PlatformerGame.engine.core.components.*;
 
 public class PlayerController extends GameObject {
-	// class member variables
-	final float gravity = 6.8f;
-	float playerVelocityY;
-	boolean canJump;
+	//class member variables
+	private final float gravity = 6.8f;
+	private float playerVelocityY;
+	private boolean canJump;
+	public boolean isRestarting = false;
 
-	//initialize sounds once because for some reason the second time it messes up here
+	//resources
 	Sound jumpSound = new Sound("sounds/jump.ogg");
 	
-	QuadRendererComponent birdRenderer;
-	SoundEmitterComponent jumpEmitterComponent;
+	//intialize components outside onCreate
+	public QuadRendererComponent birdRenderer = new QuadRendererComponent(0.2f, 0.16f);
+	private SoundEmitterComponent jumpEmitterComponent = new SoundEmitterComponent(jumpSound, "Jump Emitter");
 	
 	public void onCreate() {
 		playerVelocityY = 0;
 		canJump = true;
 		
-		birdRenderer = addComponent(new QuadRendererComponent(0.2f, 0.16f));
+		addComponent(birdRenderer);
 		birdRenderer.tex = new Texture("textures/bird.png");
 		transform.setCoords(-0.6f, 0.0f, 0.0f);
 		
-		jumpEmitterComponent = addComponent(new SoundEmitterComponent(jumpSound, "Jump Emitter"));
-
+		addComponent(jumpEmitterComponent);
 	}
 	
 	public void onUpdate() {
@@ -38,7 +39,7 @@ public class PlayerController extends GameObject {
 			playerVelocityY -= gravity*GameTime.deltaTime;
 		} else {
 			playerVelocityY = 0;
-			//SEND RESET GAME MESSAGE TO GAMEDIRECTOR?
+			isRestarting = true;
 		}
 		
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS && canJump) {

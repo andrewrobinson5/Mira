@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import com.PlatformerGame.engine.core.components.*;
 
 public class GameObject {
+	public String name;
+	
 	public ArrayList<GameObjectComponent> listComponents = new ArrayList<GameObjectComponent>();
 	private GameObjectComponent emptyComponent;
 	public TransformComponent transform;
@@ -81,22 +83,15 @@ public class GameObject {
 	
 	// Component Pattern implementation
 	public <T extends GameObjectComponent> T addComponent(T component) {
-		boolean nameExists = false;
 		for (GameObjectComponent comp : listComponents) {
 			if (component.getName() == comp.getName()) {			
-				nameExists = true;
+				listComponents.remove(comp);
 			}
 		}
 		
-		if (nameExists) {
-			throw new RuntimeException("Error: cannot create more than one component with one name");
-		} else {
-			component.setGameObject(this);
-			
-			listComponents.add(component);
-			
-			return component;
-		}
+		component.setGameObject(this);
+		listComponents.add(component);
+		return component;
 	}
 		
 	public <T extends GameObjectComponent> void removeComponent(T comp) {
@@ -134,6 +129,30 @@ public class GameObject {
 		return (T)emptyComponent;
 	}
 	
+	public GameObject(String l_name, float x, float y, float z) {
+		name = l_name;
+		emptyComponent = new GameObjectComponent("");
+		addComponent(emptyComponent);
+		
+		transform = new TransformComponent(x, y, z);
+		addComponent(transform);
+		
+		hierLevel = 0;
+	}
+	
+	public GameObject(String l_name) {
+		name = l_name;
+		// Adds an empty component for methods to work if the component being accessed does not exist
+		emptyComponent = new GameObjectComponent("");
+		addComponent(emptyComponent);
+
+		transform = new TransformComponent();
+		addComponent(transform);
+		
+		hierLevel = 0;
+	}
+	
+	//A gameobject created without a name will not have a way to interface with other game objects
 	public GameObject(float x, float y, float z) {
 		emptyComponent = new GameObjectComponent("");
 		addComponent(emptyComponent);
