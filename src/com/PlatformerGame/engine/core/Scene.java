@@ -70,8 +70,8 @@ public class Scene {
 			System.out.println("test2");
 			for(int e = 0; e < g.children.size(); e++) {
 				System.out.println("test3");
+				// this is never true for some reason
 				if(listObjects.get(e).parent == g) {
-					// this is never run
 					System.out.println("test4");
 					hierarchyHelperFunctionCreate(g.children.get(e));
 				}
