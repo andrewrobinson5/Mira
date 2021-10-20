@@ -7,7 +7,8 @@ package com.PlatformerGame.engine.core;
 import java.util.ArrayList;
 
 //I have an evil plan: Let's make this class extend gameobject and just use ArrayList children instead of listObjects. That way, when we add an object to the scene, it's just adding it to a big container GameObject.
-public class Scene {
+public class Scene extends GameObject {
+	//TODO REPLACE THIS NEXT LINE WITH GAMEOBJECT FN
 	private ArrayList<GameObject> listObjects = new ArrayList<GameObject>();
 	public ArrayList<GameObject> alreadyIteratedObjects = new ArrayList<GameObject>();
 	
@@ -62,17 +63,23 @@ public class Scene {
 	
 	// I don't really like that this is in here but I shouldn't need to fix it.
 	public void hierarchyHelperFunctionCreate(GameObject g) {
-		g.onCreate();
-		g.hasRunOnce = true;
-		System.out.println("test1");
-		if(!alreadyIteratedObjects.contains(g)) { 
+		g.onCreate(); //run the onCreate() for gameobject g
+		g.hasRunOnce = true; //set hasRunOnce to true so that it isn't run twice
+		System.out.println("test1"); //debug
+		
+		//IF the object hasn't already been iterated through
+		if(!alreadyIteratedObjects.contains(g)) {
 			alreadyIteratedObjects.add(g);
-			System.out.println("test2");
+		
+			System.out.println("test2"); //debug
+			
 			for(int e = 0; e < g.children.size(); e++) {
-				System.out.println("test3");
+			
+				System.out.println("test3"); //debug
+				
 				// this is never true for some reason
 				if(listObjects.get(e).parent == g) {
-					System.out.println("test4");
+					System.out.println("test4"); //debug
 					hierarchyHelperFunctionCreate(g.children.get(e));
 				}
 			}
