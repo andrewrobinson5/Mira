@@ -23,7 +23,7 @@ public class App {
 	
 	private int frameCounter;
 	private double timer, gcTimer;
-	private double maxFPSTimer;
+//	private double maxFPSTimer;
 	
 	
 	public App() {
@@ -39,7 +39,7 @@ public class App {
 		// init game timer
 		frameCounter = 0;
 		timer = gcTimer = 0;
-		maxFPSTimer = 0;
+//		maxFPSTimer = 0;
 
 		// create game class
 		game = new Game();
@@ -120,17 +120,17 @@ public class App {
 			GameTime.oldTime = GameTime.currentTime;
 			
 			// Sleep to avoid resource hogging
-			while (maxFPSTimer < 0.008333) {
-				Thread.yield();
-				
-				//sleep for 1ms
-				try {
-					Thread.sleep(3);
-				} catch(Exception e) {} 
-				
-				maxFPSTimer += GameTime.unaffectedDeltaTime;
-			}
-			maxFPSTimer = 0;
+//			while (maxFPSTimer < 0.008333) {
+//				Thread.yield();
+//				
+//				//sleep for 1ms
+//				try {
+//					Thread.sleep(3);
+//				} catch(Exception e) {} 
+//				
+//				maxFPSTimer += GameTime.unaffectedDeltaTime;
+//			}
+//			maxFPSTimer = 0;
 			frameCounter++;
 			
 			// Asks politely for garbage to be collected every minute. Doesn't happen quite as often as I'd prefer.

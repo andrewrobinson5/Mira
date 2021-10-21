@@ -38,6 +38,7 @@ public class ALAudioRenderer {
 			File soundFile = new File(soundUrl.toExternalForm());
 			String path = soundFile.getPath();
 			path = path.replace("file:\\", "");
+			path = path.replace("file:", "");
 			path = path.replace("%20", " ");
 			
 			int buffer = alGenBuffers();

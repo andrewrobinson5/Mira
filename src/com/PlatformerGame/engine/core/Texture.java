@@ -2,6 +2,8 @@
 //COPYRIGHT: Andrew Robinson 2021
 //DESC: Loads textures from file, stores them in buffers, and keeps track of the buffers to avoid
 //		loading a texture multiple times at once.
+//TODO: This should probably go in renderer package and be OGLTexture or OGLRenderer should expose
+//		an abstracted version of these opengl commands so it can be renderer agnostic.
 
 package com.PlatformerGame.engine.core;
 
@@ -46,6 +48,7 @@ public class Texture {
 			//String path = file.getAbsolutePath();
 			String path = file.getPath();
 			path = path.replace("file:\\", "");
+			path = path.replace("file:", "");
 			path = path.replace("%20", " ");
 			
 			//STB Image (public domain lib) converts PNG we passed to it to openGL usable RGBA data

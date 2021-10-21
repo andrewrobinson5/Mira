@@ -74,6 +74,6 @@ public class Scene {
 			}
 //			get(g).listComponents.clear();
 		}
-//		clear();
+		clear();
 	}
 }
