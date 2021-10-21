@@ -22,9 +22,8 @@ public class TwoPipes extends GameObject {
 		pipeTop.<QuadRendererComponent>addComponent(new QuadRendererComponent(0.3f, 1.8f));
 		pipeTop.<QuadRendererComponent>getComponent("QuadRenderer").tex = pipeTexture;
 		
-		// my implementation isn't perfect in that these game objects aren't added to the scene, but still executed because the parent is in the scene.
-		// that's okay I think, since it lets me use them and they won't be executed if the parent isn't in the scene, but also there should be a way
-		//		to reliably add GameObjects to a scene inside a prefab (e.g. this class), and I don't really have that yet.
+		App.currentScene.add(pipeBottom);
+		App.currentScene.add(pipeTop);
 		addChild(pipeBottom);
 		addChild(pipeTop);
 	}

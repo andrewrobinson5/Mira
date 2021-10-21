@@ -7,6 +7,7 @@ import com.PlatformerGame.engine.core.GameObject;
 import com.PlatformerGame.engine.core.Sound;
 import com.PlatformerGame.engine.core.Texture;
 import com.PlatformerGame.engine.core.components.*;
+import com.PlatformerGame.engine.core.*;
 
 public class BackgroundPlate extends GameObject {
 	//member variables
@@ -14,7 +15,7 @@ public class BackgroundPlate extends GameObject {
 
 	//resources
 	Texture pipeTexture = new Texture("/textures/backdrop.png");
-	Sound backgroundMusic = new Sound("sounds/song.ogg");
+	Sound backgroundMusic = new Sound("/sounds/song.ogg");
 
 	//components
 	QuadRendererComponent pipeRenderer = new QuadRendererComponent(2.1f, 2.1f);
@@ -28,6 +29,7 @@ public class BackgroundPlate extends GameObject {
 		addComponent(BGMusicEmitterComponent);
 		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
 		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_GLOBAL, 1);
+		App.miraPriorityExecuteComponentOnCreate(BGMusicEmitterComponent);
 		
 		if(iterations == 0) {
 			BGMusicEmitterComponent.startSound();

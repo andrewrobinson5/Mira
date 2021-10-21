@@ -9,6 +9,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import com.PlatformerGame.engine.renderer.*;
 import com.PlatformerGame.engine.audio.*;
+import com.PlatformerGame.engine.core.components.GameObjectComponent;
 import com.PlatformerGame.game.*;
 
 public class App {
@@ -48,6 +49,16 @@ public class App {
 		
 	}
 	
+	//Execute a component free from normal engine flow.
+	//	Sometimes, a component will need to execute before its owner gameobject does. Use this in the GameObject's code.
+	//	This won't be an issue when I finally move to a real script component and move logic out of the GameObject class.
+	//		(this makes me think the whole structure is getting needlessly convoluted when I could probably have almost all
+	//			logic in that class and not have components altogether. Oy vey.)
+	public static <T extends GameObjectComponent> void miraPriorityExecuteComponentOnCreate(T component) {
+		component.onCreate();
+		component.hasRunOnce = true;
+	}
+	
 	public void loop() {
 		// set up gameLoop and run every onCreate/onUpdate for every gameObject in the current scene in Game.java
 		while (!glfwWindowShouldClose(gameWindow.window)) {
@@ -61,7 +72,8 @@ public class App {
 				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
 					for (int g = 0; g < currentScene.size(); g++) {	
 						if (currentScene.get(g).hierLevel == h && !currentScene.get(g).hasRunOnce) {
-							currentScene.hierarchyHelperFunctionCreate(currentScene.get(g));
+							currentScene.get(g).onCreate();
+							currentScene.get(g).hasRunOnce = true;
 						}
 					}
 				}
@@ -71,7 +83,15 @@ public class App {
 				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
 					for (int g = 0; g < currentScene.size(); g++) {	
 						if (currentScene.get(g).hierLevel == h) {
-							currentScene.hierarchyHelperFunctionUpdate(currentScene.get(g));
+							currentScene.get(g).onUpdate();
+							for (int i = 0; i < currentScene.get(g).listComponents.size(); i++) {
+								if (currentScene.get(g).listComponents.get(i).enabled) {
+									if (!currentScene.get(g).listComponents.get(i).hasRunOnce)
+										currentScene.get(g).listComponents.get(i).onCreate();
+									
+									currentScene.get(g).listComponents.get(i).onUpdate();
+								}
+							}
 						}
 					}
 				}

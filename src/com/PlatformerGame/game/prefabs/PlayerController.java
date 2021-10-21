@@ -17,7 +17,7 @@ public class PlayerController extends GameObject {
 	public boolean isRestarting = false;
 
 	//resources
-	Sound jumpSound = new Sound("sounds/jump.ogg");
+	Sound jumpSound = new Sound("/sounds/jump.ogg");
 	
 	//intialize components outside onCreate
 	public QuadRendererComponent birdRenderer = new QuadRendererComponent(0.2f, 0.16f);
@@ -28,7 +28,7 @@ public class PlayerController extends GameObject {
 		canJump = true;
 		
 		addComponent(birdRenderer);
-		birdRenderer.tex = new Texture("textures/bird.png");
+		birdRenderer.tex = new Texture("/textures/bird.png");
 		transform.setCoords(-0.6f, 0.0f, 0.0f);
 		
 		addComponent(jumpEmitterComponent);
