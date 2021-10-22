@@ -2,6 +2,7 @@ package com.PlatformerGame.game.prefabs;
 
 import static com.PlatformerGame.engine.core.components.SoundEmitterComponent.MIRA_SOUND_ATTRIB.MIRA_SOUND_GLOBAL;
 import static com.PlatformerGame.engine.core.components.SoundEmitterComponent.MIRA_SOUND_ATTRIB.MIRA_SOUND_LOOPING;
+import static com.PlatformerGame.engine.core.MiraUtils.*;
 
 import com.PlatformerGame.engine.core.GameObject;
 import com.PlatformerGame.engine.core.Sound;
@@ -29,7 +30,7 @@ public class BackgroundPlate extends GameObject {
 		addComponent(BGMusicEmitterComponent);
 		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_LOOPING, 1);
 		BGMusicEmitterComponent.setMiraSoundAttrib(MIRA_SOUND_GLOBAL, 1);
-		App.miraPriorityExecuteComponentOnCreate(BGMusicEmitterComponent);
+		miraPriorityExecuteComponentOnCreate(BGMusicEmitterComponent);
 		
 		if(iterations == 0) {
 			BGMusicEmitterComponent.startSound();
