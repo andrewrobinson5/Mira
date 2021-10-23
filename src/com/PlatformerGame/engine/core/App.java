@@ -24,7 +24,10 @@ public class App {
 	private int frameCounter;
 	private double timer, gcTimer;
 //	private double maxFPSTimer;
-	
+
+	//micro-optimization vars, instantiating outside of loops
+	private int sceneDepth, sceneSize;	
+	private GameObject currentGameObjectExecuting;
 	
 	public App() {
 		// init window - width and height should be in an ini file
@@ -57,7 +60,6 @@ public class App {
 				glfwSetWindowShouldClose(gameWindow.window, true);
 			}
 			
-			
 			/*	Some explanation because this loop is really freakin hard to read and I'll probably need to come back to it later
 			 *	Goals of this loop are:
 			 *		1: Execute each GameObject's code in the current scene
@@ -70,42 +72,50 @@ public class App {
 			
 			// Only run when there is a scene loaded
 			if(currentScene != null) {
+				sceneDepth = currentScene.getHierarchyDepth(); // Mircro-optimizations, babyyyy
+				sceneSize = currentScene.size();
+				
 				// This gets the depth of the scene tree so we don't waste time looking for objects where there are none
 				// 		and then it iterates through each level of the tree starting with its roots and working through children
-				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
+				for(int h = 0; h <= sceneDepth; h++) { 
 					// This iterates through all GameObjects in the scene
-					for (int g = 0; g < currentScene.size(); g++) {	
+					for (int g = 0; g < sceneSize; g++) {	
+						currentGameObjectExecuting = currentScene.get(g); //putting this here to avoid making expensive method calls several times
+						
 						// And finally, if the GameObject is on the current level 'h' in our tree, we'll check if it's onCreate() method has
 						//		been run yet. If it hasn't, run it. If it has, ignore.
-						if (currentScene.get(g).hierLevel == h && !currentScene.get(g).hasRunOnce) {
-							currentScene.get(g).onCreate();
-							currentScene.get(g).hasRunOnce = true;
+						if (currentGameObjectExecuting.hierLevel == h && !currentScene.get(g).hasRunOnce) {
+							currentGameObjectExecuting.onCreate();
+							currentGameObjectExecuting.hasRunOnce = true;
 						}
 					}
 				}
 				
-				game.onUpdate();
-
-				// I do pretty much the same thing here, but after that's done to guarantee that every object has been onCreate()d before we 
+ 				// I do pretty much the same thing here, but after that's done to guarantee that every object has been onCreate()d before we 
 				//		run the onUpdate()s [because sometimes the onUpdate()s will rely on objects to already be initialized in engine flow]
-				for(int h = 0; h <= currentScene.getHierarchyDepth(); h++) {
-					for (int g = 0; g < currentScene.size(); g++) {	
-						if (currentScene.get(g).hierLevel == h) {
+				for(int h = 0; h <= sceneDepth; h++) {
+					for (int g = 0; g < sceneSize; g++) {	
+						currentGameObjectExecuting = currentScene.get(g); //putting this here to avoid making expensive method calls several times
+						//I don't make the same optimization for the currently executing component, because while the list of GameObjects in a scene may extend into the hundreds or thousands,
+						//		the number of components per GameObject will stay pretty low, and so iterating through that ArrayList isn't nearly as expensive.
+
+						if (currentGameObjectExecuting.hierLevel == h) {
 							// Runs the GameObjects' onUpdate() methods in order
-							currentScene.get(g).onUpdate();
+							currentGameObjectExecuting.onUpdate();
 							// Then runs the onCreate() and onUpdate() methods of the object's components.
-							for (int i = 0; i < currentScene.get(g).listComponents.size(); i++) {
-								if (currentScene.get(g).listComponents.get(i).enabled) {
+							for (int i = 0; i < currentGameObjectExecuting.listComponents.size(); i++) {
+								if (currentGameObjectExecuting.listComponents.get(i).enabled) {
 									// And I have this here so that components don't initialize before the object
-									if (!currentScene.get(g).listComponents.get(i).hasRunOnce)
-										currentScene.get(g).listComponents.get(i).onCreate();
+									if (!currentGameObjectExecuting.listComponents.get(i).hasRunOnce)
+										currentGameObjectExecuting.listComponents.get(i).onCreate();
 									
-									currentScene.get(g).listComponents.get(i).onUpdate();
+									currentGameObjectExecuting.listComponents.get(i).onUpdate();
 								}
 							}
 						}
 					}
 				}
+				game.onUpdate();
 			} else {
 				// some kind of loading screen?
 			}
