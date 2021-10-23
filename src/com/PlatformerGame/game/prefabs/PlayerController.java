@@ -1,6 +1,6 @@
 //NAME: PlayerController.java
 //COPYRIGHT: Andrew Robinson
-//DESC: Player movement and collision detection
+//DESC: Player movement
 
 package com.PlatformerGame.game.prefabs;
 
@@ -19,7 +19,7 @@ public class PlayerController extends GameObject {
 	//resources
 	Sound jumpSound = new Sound("/sounds/jump.ogg");
 	
-	//intialize components outside onCreate
+	//components
 	public QuadRendererComponent birdRenderer = new QuadRendererComponent(0.2f, 0.16f);
 	private SoundEmitterComponent jumpEmitterComponent = new SoundEmitterComponent(jumpSound, "Jump Emitter");
 	
@@ -42,6 +42,7 @@ public class PlayerController extends GameObject {
 			isRestarting = true;
 		}
 		
+		// HACK: glfw shouldn't be exposed to game code but it's more work than it's worth to abstract it away for this project's scope.
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS && canJump) {
 			playerVelocityY = 2.1f; // this single line makes the player jump.
 			canJump = false; // prevents jump spam from holding down space for longer than 1 frame

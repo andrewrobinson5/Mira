@@ -8,7 +8,6 @@ import com.PlatformerGame.engine.core.GameObject;
 import com.PlatformerGame.engine.core.Sound;
 import com.PlatformerGame.engine.core.Texture;
 import com.PlatformerGame.engine.core.components.*;
-import com.PlatformerGame.engine.core.*;
 
 public class BackgroundPlate extends GameObject {
 	//member variables
@@ -36,9 +35,5 @@ public class BackgroundPlate extends GameObject {
 			BGMusicEmitterComponent.startSound();
 		}
 		iterations++;
-	}
-	
-	public void onUpdate() {
-		
 	}
 }
