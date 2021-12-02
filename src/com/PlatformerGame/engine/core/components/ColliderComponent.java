@@ -3,5 +3,5 @@
 package com.PlatformerGame.engine.core.components;
 
 public class ColliderComponent {
-	String colliderType;
+	//enum for collider types
 }

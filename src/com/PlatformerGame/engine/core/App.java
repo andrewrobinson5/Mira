@@ -28,6 +28,7 @@ public class App {
 	//micro-optimization vars, instantiating outside of loops
 	private int sceneDepth, sceneSize;	
 	private GameObject currentGameObjectExecuting;
+	private GameObjectComponent currentGameObjectComponentExecuting;
 	
 	public App() {
 		// init window - width and height should be in an ini file
@@ -60,7 +61,7 @@ public class App {
 				glfwSetWindowShouldClose(gameWindow.window, true);
 			}
 			
-			/*	Some explanation because this loop is really freakin hard to read and I'll probably need to come back to it later
+			/*	Some explanation because this loop is hard to read and I'll probably need to come back to it later
 			 *	Goals of this loop are:
 			 *		1: Execute each GameObject's code in the current scene
 			 *			a: onCreate() method should be in this loop, so that GameObjects that are created after the loop begins may execute
@@ -72,7 +73,7 @@ public class App {
 			
 			// Only run when there is a scene loaded
 			if(currentScene != null) {
-				sceneDepth = currentScene.getHierarchyDepth(); // Mircro-optimizations, babyyyy
+				sceneDepth = currentScene.getHierarchyDepth();
 				sceneSize = currentScene.size();
 				
 				// This gets the depth of the scene tree so we don't waste time looking for objects where there are none
@@ -95,21 +96,20 @@ public class App {
 				//		run the onUpdate()s [because sometimes the onUpdate()s will rely on objects to already be initialized in engine flow]
 				for(int h = 0; h <= sceneDepth; h++) {
 					for (int g = 0; g < sceneSize; g++) {	
-						currentGameObjectExecuting = currentScene.get(g); //putting this here to avoid making expensive method calls several times
-						//I don't make the same optimization for the currently executing component, because while the list of GameObjects in a scene may extend into the hundreds or thousands,
-						//		the number of components per GameObject will stay pretty low, and so iterating through that ArrayList isn't nearly as expensive.
+						currentGameObjectExecuting = currentScene.get(g);
 
 						if (currentGameObjectExecuting.hierLevel == h) {
 							// Runs the GameObjects' onUpdate() methods in order
 							currentGameObjectExecuting.onUpdate();
 							// Then runs the onCreate() and onUpdate() methods of the object's components.
 							for (int i = 0; i < currentGameObjectExecuting.listComponents.size(); i++) {
-								if (currentGameObjectExecuting.listComponents.get(i).enabled) {
+								currentGameObjectComponentExecuting = currentGameObjectExecuting.listComponents.get(i);
+								if (currentGameObjectComponentExecuting.enabled) {
 									// And I have this here so that components don't initialize before the object
-									if (!currentGameObjectExecuting.listComponents.get(i).hasRunOnce)
-										currentGameObjectExecuting.listComponents.get(i).onCreate();
+									if (!currentGameObjectComponentExecuting.hasRunOnce)
+										currentGameObjectComponentExecuting.onCreate();
 									
-									currentGameObjectExecuting.listComponents.get(i).onUpdate();
+									currentGameObjectComponentExecuting.onUpdate();
 								}
 							}
 						}
