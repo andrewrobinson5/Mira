@@ -11,15 +11,15 @@ import com.PlatformerGame.engine.core.components.*;
 
 public class BackgroundPlate extends GameObject {
 	//member variables
-	int iterations = 0;
+	private int iterations = 0;
 
 	//resources
-	Texture pipeTexture = new Texture("/textures/backdrop.png");
-	Sound backgroundMusic = new Sound("/sounds/song.ogg");
+	private Texture pipeTexture = new Texture("/textures/backdrop.png");
+	private Sound backgroundMusic = new Sound("/sounds/song.ogg");
 
 	//components
-	QuadRendererComponent pipeRenderer = new QuadRendererComponent(2.1f, 2.1f);
-	SoundEmitterComponent BGMusicEmitterComponent = new SoundEmitterComponent(backgroundMusic, "BGMusic Emitter");
+	public QuadRendererComponent pipeRenderer = new QuadRendererComponent(2.1f, 2.1f);
+	public SoundEmitterComponent BGMusicEmitterComponent = new SoundEmitterComponent(backgroundMusic, "BGMusic Emitter");
 	
 	public void onCreate() {
 		pipeRenderer.tex = pipeTexture;

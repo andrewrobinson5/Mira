@@ -17,7 +17,7 @@ public class PlayerController extends GameObject {
 	public boolean isRestarting = false;
 
 	//resources
-	Sound jumpSound = new Sound("/sounds/jump.ogg");
+	private Sound jumpSound = new Sound("/sounds/jump.ogg");
 	
 	//components
 	public QuadRendererComponent birdRenderer = new QuadRendererComponent(0.2f, 0.16f);
@@ -27,19 +27,19 @@ public class PlayerController extends GameObject {
 		playerVelocityY = 0;
 		canJump = true;
 		
-		addComponent(birdRenderer);
+		addComponent(birdRenderer); //adding the component to this gameobject's component bag tells App.java to run its methods
 		birdRenderer.tex = new Texture("/textures/bird.png");
-		transform.setCoords(-0.6f, 0.0f, 0.0f);
+		transform.setCoords(-0.6f, 0.0f, 0.0f); //starting position on screen for bird
 		
-		addComponent(jumpEmitterComponent);
+		addComponent(jumpEmitterComponent); //sound component
 	}
 	
 	public void onUpdate() {
 		if ((birdRenderer.bounds[3].get(1) + transform.getCoords().get(1)) > -1f) {
-			playerVelocityY -= gravity*GameTime.deltaTime;
+			playerVelocityY -= gravity*GameTime.deltaTime; //gravity. We multiply it by change in time so the bird falls at the same rate on fast and slow computers
 		} else {
 			playerVelocityY = 0;
-			isRestarting = true;
+			isRestarting = true; //fail state. Tells the game to restart
 		}
 		
 		// HACK: glfw shouldn't be exposed to game code but it's more work than it's worth to abstract it away for this project's scope.
@@ -51,7 +51,7 @@ public class PlayerController extends GameObject {
 			
 		}
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
-			canJump = true;
+			canJump = true; //after the player releases the space bar, then they may press it again
 		}
 		
 		transform.y += (playerVelocityY*GameTime.deltaTime); //we only need to move the bird on the Y axis for this demo so I'm only gonna calculate it for the Y

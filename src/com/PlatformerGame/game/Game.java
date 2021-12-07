@@ -23,18 +23,18 @@ public class Game {
 	
 	public Scene myScene = new Scene();
 	
-	TwoPipes wall1;
-	TwoPipes wall2;
-	TwoPipes wall3;
-	TwoPipes wall4;
+	private TwoPipes wall1;
+	private TwoPipes wall2;
+	private TwoPipes wall3;
+	private TwoPipes wall4;
 	
-	PlayerController player = new PlayerController();
-	BackgroundPlate backdrop = new BackgroundPlate();
+	private PlayerController player = new PlayerController();
+	private BackgroundPlate backdrop = new BackgroundPlate();
 	
 	public void onCreate() {
 		paused = true;
 		
-		//GameObject creation and adding to scene.
+		//GameObject creation and adding to scene. Everything that is going to be in the scene should be added to it here
 		player.name = "player";
 		myScene.add(player);
 		
@@ -65,16 +65,17 @@ public class Game {
 	
 	public void onUpdate() {
 		if (paused) {
-			GameTime.pause();
+			GameTime.pause(); //start the game paused. I don't have a centralized physics system, so I'm just multiplying the gametime by all the velocity calculations per object
 			
 			//TODO: Input handling abstraction
 			if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-				paused = !paused;
+				paused = !paused; //toggle paused state
 			}
 		} else if (!paused)
 			GameTime.play();
 		
 		if (player.isRestarting) {
+			//when the player loses, the game should restart. I do this by resetting the scene and loading it again
 			//REPLACE THIS WITH LOSS STATE
 			paused = true;
 			myScene.unloadScene();
@@ -82,7 +83,7 @@ public class Game {
 			wall2.transform.x = 0.85f;
 			wall3.transform.x = 1.7f;
 			wall4.transform.x = 2.55f;
-			onCreate();
+			onCreate(); //and then I have to run this from here because the logic for the game is in this class and not in a GameObject method
 			myScene.loadScene();
 			player.isRestarting = false;
 		}

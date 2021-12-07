@@ -16,17 +16,17 @@ public class Scene {
 	}
 	
 	public GameObject get(int i) {
-		return listObjects.get(i);
+		return listObjects.get(i); //this interface is buggy and bad and shouldn't be used
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends GameObject> T get(String go) {
 		for(int i = 0; i < listObjects.size(); i++) {
-			if(listObjects.get(i).name == go) {
+			if(listObjects.get(i).name == go) { //search for the game object with that name
 				return (T)listObjects.get(i);
 			}
 		}
-		//do not use this function if you don't know the name.
+		//do not use this function if you don't know the name. It will assert that it exists
 		throw new RuntimeException("Illegal behavior: Attempted to get non-existant GameObject '" + go + "'.");
 	}
 	
@@ -38,7 +38,7 @@ public class Scene {
 	private void addHelperFunction(GameObject g) {
 		listObjects.add(g);
 		for(int i = 0; i < g.children.size(); i++) {
-			addHelperFunction(g.children.get(i));
+			addHelperFunction(g.children.get(i)); //adds a game object's children as well
 		}
 	}
 	
@@ -67,12 +67,10 @@ public class Scene {
 	public void unloadScene() {
 		App.currentScene = null;
 		for (int g = 0; g < size(); g++) {	
-			get(g).hasRunOnce = false;
-//			System.out.println("test");
+			get(g).hasRunOnce = false; //reset the gameobjects and components to initial state
 			for (int f = 0; f < get(g).listComponents.size(); f++) {
 				get(g).listComponents.get(f).hasRunOnce = false;
 			}
-//			get(g).listComponents.clear();
 		}
 		clear();
 	}

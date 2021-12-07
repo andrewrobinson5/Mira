@@ -24,8 +24,7 @@ public class QuadRendererComponent extends RendererComponent {
 	
 	private void updatePositionTextured() {
 		// Doing everything the hard way to avoid creating new floats every frame. Why create a lot when I can just reuse them?
-
-		// Ooh didn't know I could do all this addition per bound on the gpu. We can just pass the transform in a matrix to a uniform and it'll take care of drawing for us. TODO or something.
+		//36*32 bit floats is still a decent chunk of memory for every single renderable object. A 16-bit float could probably be useful here, as precision isn't terribly important and the coordinates stay close to zero anyway
 		quad_vertex_buffer_data[0] = bounds[0].get(0) + m_object.transform.getGlobalCoords().get(0);
 		quad_vertex_buffer_data[1] = bounds[0].get(1) + m_object.transform.getGlobalCoords().get(1);
 		quad_vertex_buffer_data[2] = bounds[0].get(2) + m_object.transform.getGlobalCoords().get(2);
@@ -68,9 +67,7 @@ public class QuadRendererComponent extends RendererComponent {
 	}
 	
 	private void updatePositionUntextured() {
-		// Doing everything the hard way to avoid creating new floats every frame. Why create a lot when I can just reuse them?
-
-		// Ooh didn't know I could do all this addition per bound on the gpu. We can just pass the transform in a matrix to a uniform and it'll take care of drawing for us. TODO or something.
+		//same as above but without texture coordinates
 		quad_vertex_buffer_data[0] = bounds[0].get(0) + m_object.transform.getGlobalCoords().get(0);
 		quad_vertex_buffer_data[1] = bounds[0].get(1) + m_object.transform.getGlobalCoords().get(1);
 		quad_vertex_buffer_data[2] = bounds[0].get(2) + m_object.transform.getGlobalCoords().get(2);
@@ -111,6 +108,7 @@ public class QuadRendererComponent extends RendererComponent {
 	public void onUpdate() {
 		//super.onUpdate(); // Nothing in superclass onUpdate(), commenting out for now
 		
+		//if there is a texture assigned to this component, then we'll use it, otherwise we'll use a solid color
 		if(tex == null) {
 			updatePositionUntextured();
 			m_renderer.createMesh(quad_vertex_buffer_data, quad_vertex_indices_data);
@@ -118,7 +116,7 @@ public class QuadRendererComponent extends RendererComponent {
 			updatePositionTextured();
 			m_renderer.createTexturedMesh(quad_vertex_buffer_data, quad_vertex_indices_data, tex);
 		}		
-	}	
+	}
 	
 	// This interface is so much nicer to work with!
 	public QuadRendererComponent(float width, float height) {

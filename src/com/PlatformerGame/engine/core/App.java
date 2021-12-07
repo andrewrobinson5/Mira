@@ -31,7 +31,7 @@ public class App {
 	private GameObjectComponent currentGameObjectComponentExecuting;
 	
 	public App() {
-		// init window - width and height should be in an ini file
+		// init window - width and height should be in an ini file, but this is okay here.
 		width = 800;
 		height = 600;
 		gameWindow = new Window(width, height, "GLFW window. Press esc to close...", false);
@@ -48,7 +48,7 @@ public class App {
 		// create game class
 		game = new Game();
 		
-		// run Game.onCreate()
+		// run Game.onCreate(). This app class works by running through every object in a scene and running its onCreate() methods only once, but the onUpdate() methods every loop.
 		game.onCreate();
 		
 	}
@@ -56,9 +56,9 @@ public class App {
 	public void loop() {
 		// set up gameLoop and run every onCreate/onUpdate for every gameObject in the current scene in Game.java
 		while (!glfwWindowShouldClose(gameWindow.window)) {
-			glfwPollEvents();
+			glfwPollEvents(); //glfw library. This listens for keyboard input.
 			if(glfwGetKey(gameWindow.window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-				glfwSetWindowShouldClose(gameWindow.window, true);
+				glfwSetWindowShouldClose(gameWindow.window, true); //close the window
 			}
 			
 			/*	Some explanation because this loop is hard to read and I'll probably need to come back to it later

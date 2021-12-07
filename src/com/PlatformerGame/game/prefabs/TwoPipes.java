@@ -6,7 +6,7 @@ import com.PlatformerGame.engine.core.components.*;
 import java.lang.Math;
 
 public class TwoPipes extends GameObject {
-	float pipesVelocity = -0.5f;
+	private float pipesVelocity = -0.5f;
 	
 	public void onCreate() {
 		Texture pipeTexture = new Texture("/textures/pipe.png");
