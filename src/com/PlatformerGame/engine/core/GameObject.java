@@ -83,7 +83,9 @@ public class GameObject {
 	
 	// Component Pattern implementation
 	public <T extends GameObjectComponent> T addComponent(T component) {
-		for (GameObjectComponent comp : listComponents) {
+		ArrayList<GameObjectComponent> TMPComponents = new ArrayList<GameObjectComponent>();
+		TMPComponents.addAll(listComponents);
+		for (GameObjectComponent comp : TMPComponents) {
 			if (component.getName() == comp.getName()) {			
 				listComponents.remove(comp);
 			}

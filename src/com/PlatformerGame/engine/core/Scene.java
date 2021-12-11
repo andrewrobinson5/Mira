@@ -6,6 +6,8 @@ package com.PlatformerGame.engine.core;
 
 import java.util.ArrayList;
 
+import com.PlatformerGame.engine.core.components.ColliderComponent;
+
 //I have an evil plan: Let's make this class extend gameobject and just use ArrayList children instead of listObjects. That way, when we add an object to the scene, it's just adding it to a big container GameObject.
 public class Scene {
 	private ArrayList<GameObject> listObjects = new ArrayList<GameObject>();
@@ -72,6 +74,7 @@ public class Scene {
 				get(g).listComponents.get(f).hasRunOnce = false;
 			}
 		}
+		ColliderComponent.colliders.clear();
 		clear();
 	}
 }
