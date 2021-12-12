@@ -20,7 +20,8 @@ public class GameObject {
 	public ArrayList<GameObject> children = new ArrayList<GameObject>();
 	public GameObject parent = null;
 	public int hierLevel;
-	
+
+	//after we parent an object to another object, its level should become one higher than its parent object to reflect the change
 	private void incrementLvlAfterParenting() {
 		if (parent == null)
 			hierLevel = 0;
@@ -33,6 +34,7 @@ public class GameObject {
 		}
 	}
 	
+	//after we unparent an object from another object, it and its children should become top level and children of top level
 	private void decrementLvlAfterUnparenting() {
 		if (parent == null)
 			hierLevel = 0;
@@ -78,7 +80,7 @@ public class GameObject {
 		hasRunOnce = true;
 	}
 	public void onUpdate() {
-		
+		//every gameobject needs to have this so that, even if the game programmer doesn't explicitly declare an onUpdate method, the compiler can still run something and not error out
 	}
 	
 	// Component Pattern implementation

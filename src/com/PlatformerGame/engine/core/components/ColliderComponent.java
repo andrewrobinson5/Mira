@@ -5,33 +5,25 @@ package com.PlatformerGame.engine.core.components;
 import java.util.ArrayList;
 
 public class ColliderComponent extends GameObjectComponent {
-	public static ArrayList<ColliderComponent> colliders = new ArrayList<ColliderComponent>();
+	//this isn't particularly good but it works for this project. It makes the collision system less reusable for other games, though.
+	public static ArrayList<ColliderComponent> colliders = new ArrayList<ColliderComponent>(); // we store an array of all colliders in a scene so that one object can check itself against everything else. This is game specific, not engine specific.
 	private int index;
 	
-	public float x, y;
-	public float w, h;
+	public float x, y; //location variables for the collider
+	public float w, h; //size of the collider
 	
 	public void onUpdate() {
+		//we want the collider to stick to the position of its GameObject
 		x = m_object.transform.getGlobalCoords().get(0);
 		y = m_object.transform.getGlobalCoords().get(1);
 	}
 	
 	public void destroy() {
-		colliders.remove(index);
+		colliders.remove(index); //removes an object from a list of colliders. Buggy. Don't like this.
 	}
 	
 	public ColliderComponent(float width, float height) {
 		super("ColliderComponent");
-		//center the local vertex coordinates based on the width and height
-//		float leftX = 0-(width/2);
-//		float rightX = width/2;
-//		float topY = height/2;
-//		float bottomY = 0-(height/2);
-
-//		bounds[0] = new Vector3f(leftX, topY, 0); //top left vert
-//		bounds[1] = new Vector3f(rightX, topY, 0); //top right vert
-//		bounds[2] = new Vector3f(leftX, bottomY, 0); //bottom left vert
-//		bounds[3] = new Vector3f(rightX, bottomY, 0); //bottom right vert
 		w = width;
 		h = height;
 	

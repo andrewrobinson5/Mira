@@ -129,7 +129,7 @@ public class App {
 			GameTime.unaffectedDeltaTime = (GameTime.currentTime-GameTime.oldTime);
 			GameTime.deltaTime = GameTime.unaffectedDeltaTime*GameTime.getTimeScale();
 			if (timer >= 1) {
-				System.out.println(frameCounter);
+//				System.out.println(frameCounter);
 				frameCounter = 0;
 				timer = 0;
 			} else {

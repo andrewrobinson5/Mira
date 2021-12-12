@@ -33,16 +33,18 @@ public class ALAudioRenderer {
 	
 	//Make this return buffer instead of source, source should be created by a function call from SoundEmitterComponent.java
 	public int loadSound(String filename) {
+		//lots of the Light Weight Java Game Library uses buffers and stack memory in a similar way as pointers may be used in c++. Some functions need to change the value at the pointer to work, so we use LWJGL's memory stack to allocate those. It is faster than Java's NIO to my knowledge
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			URL soundUrl = Sound.class.getResource("/res/" + filename);
 			File soundFile = new File(soundUrl.toExternalForm());
 			String path = soundFile.getPath();
+			//the following ensures the program works on windows and linux, without these it works on neither.
 			path = path.replace("file:\\", "");
 			path = path.replace("file:", "");
 			path = path.replace("%20", " ");
 			
-			int buffer = alGenBuffers();
-			int error = alGetError();
+			int buffer = alGenBuffers(); //create an openAL buffer to put sound into
+			int error = alGetError(); //check if there was an error
 			if(error != AL_NO_ERROR) {
 				System.out.println("Error at alGenBuffers: " + error);
 			}
@@ -70,7 +72,7 @@ public class ALAudioRenderer {
 		}
 	}
 	
-	//I don't like this thin wrapper, but I need the abstraction in case I add a different audio backend.
+	//the following functions are just thin wrappers over OpenAL functions. I used these in case I wanted to switch/expand audio libraries later on.
 	public void putSoundInSource(Sound sound, int source) {
 		alSourcei(source, AL_BUFFER, sound.getBufferId());
 	}
@@ -162,7 +164,7 @@ public class ALAudioRenderer {
 		});
 	}
 		
-	
+	//clean up openAL so it doesn't yell at the user when they close the program
 	public void destroy() {
 		context = alcGetCurrentContext();
 		alcMakeContextCurrent(NULL);

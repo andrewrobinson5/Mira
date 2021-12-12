@@ -7,6 +7,7 @@ public class TransformComponent extends GameObjectComponent {
 	public float globalX, globalY, globalZ;
 	
 	public void onUpdate() {
+		//the absolute position of the game object should inherit from its parent. If there is no parent, then no change is made.
 		if(m_object.parent != null) {
 			globalX = x + m_object.parent.transform.getCoords().get(0);
 			globalY = y + m_object.parent.transform.getCoords().get(1);
