@@ -34,7 +34,7 @@ public class App {
 		// init window - width and height should be in an ini file, but this is okay here.
 		width = 800;
 		height = 600;
-		gameWindow = new Window(width, height, "GLFW window. Press esc to close...", false);
+		gameWindow = new Window(width, height, "Flappy Bird - Press esc to close...", false);
 
 		// init static renderers
 		renderer = new OGLRenderer();

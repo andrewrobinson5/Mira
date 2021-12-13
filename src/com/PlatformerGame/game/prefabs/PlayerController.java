@@ -30,7 +30,7 @@ public class PlayerController extends GameObject {
 	
 	//components
 	public QuadRendererComponent birdRenderer = new QuadRendererComponent(0.2f, 0.16f);
-	private ColliderComponent birdCollider = new ColliderComponent(0.2f, 0.16f);
+	private ColliderComponent birdCollider = new ColliderComponent(0.19f, 0.14f);
 	private SoundEmitterComponent jumpEmitterComponent = new SoundEmitterComponent(jumpSound, "Jump Emitter");
 	
 	public void onCreate() {
@@ -59,11 +59,11 @@ public class PlayerController extends GameObject {
 			isRestarting = true; //fail state. Tells the game to restart
 		}
 		
+		//check if player hit pipe
 		boolean restartafter = false;
 		for(int i = 0; i < ColliderComponent.colliders.size(); i++) {
 			if (birdCollider != ColliderComponent.colliders.get(i)) {
 				if (Collider.checkCollision(birdCollider, ColliderComponent.colliders.get(i))) {
-//					System.out.println("Collision!"); //debug comment
 					restartafter = true; //using this because restarting inside the loop gave me a weird concurrency error and I'm not using concurrency
 				}
 			}
@@ -77,7 +77,7 @@ public class PlayerController extends GameObject {
 					score++; //increment score
 					shouldUpdateScore = true; //this tells the Game class to ask ScoreCounter to increment (I don't have messaging between gameobjects figured out very well)
 					scoreLimiter = GameTime.getTime(); //limits number of points a player can get per second to one.
-					System.out.println("Score: " + score);
+//					System.out.println("Score: " + score);
 				}
 			}
 		}
@@ -116,7 +116,7 @@ public class PlayerController extends GameObject {
 		
 		// HACK: glfw shouldn't be exposed to game code but it's more work than it's worth to abstract it away for this project's scope.
 		if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS && canJump) {
-			playerVelocityY = 2.1f; // this single line makes the player jump.
+			playerVelocityY = 2f; // this single line makes the player jump.
 			canJump = false; // prevents jump spam from holding down space for longer than 1 frame
 			
 			jumpEmitterComponent.startSound(); //play sound

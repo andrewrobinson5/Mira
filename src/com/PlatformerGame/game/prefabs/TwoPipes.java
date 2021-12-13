@@ -17,12 +17,12 @@ public class TwoPipes extends GameObject {
 		transform.y = (float)(Math.random()*.8f)-.4f; //set the vertical position randomly
 		transform.z = -0.5f; //push the pipes toward the camera so it renders in front of the bird and background
 		
-		pipeBottom = new GameObject(0, -1.3f, 0);
+		pipeBottom = new GameObject(0, -1.25f, 0);
 		pipeBottom.<QuadRendererComponent>addComponent(new QuadRendererComponent(0.3f, 1.8f));
 		pipeBottom.<QuadRendererComponent>getComponent("QuadRenderer").tex = pipeTexture;
 		pipeBottom.<ColliderComponent>addComponent(new ColliderComponent(0.3f, 1.8f));
 		
-		pipeTop= new GameObject(0, 1.3f, 0);
+		pipeTop= new GameObject(0, 1.25f, 0);
 		pipeTop.<QuadRendererComponent>addComponent(new QuadRendererComponent(0.3f, 1.8f));
 		pipeTop.<QuadRendererComponent>getComponent("QuadRenderer").tex = pipeTexture;
 		pipeTop.<ColliderComponent>addComponent(new ColliderComponent(0.3f, 1.8f));

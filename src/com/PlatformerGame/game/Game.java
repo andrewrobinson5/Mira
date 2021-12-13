@@ -93,6 +93,7 @@ public class Game {
 			if (glfwGetKey(App.gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 				paused = !paused; //toggle paused state
 				spaceText.getComponent("QuadRenderer").enabled = false;
+				sc.updateScoreCount(0);
 			}
 		} else if (!paused)
 			GameTime.play();
